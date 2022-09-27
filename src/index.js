@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const router = require('./routes/index')
 const ColumnsRouter = require('./routes/columns')
 const CardsRouter = require('./routes/cards')
+const BoardRouter = require('./routes/boards')
 const PORT = process.env.PORT || 4000;
 const app = express()
 
@@ -14,9 +15,11 @@ app.use(cors({
     credentials: true,
     origin: process.env.CLIENT_URL
 }));
+
 app.use('/api', router);
 app.use('/columns', ColumnsRouter);
 app.use('/cards', CardsRouter);
+app.use('/boards', BoardRouter)
 
 const start = async () => {
     try {
