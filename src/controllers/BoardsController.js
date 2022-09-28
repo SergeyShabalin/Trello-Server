@@ -23,8 +23,6 @@ class BoardsController {
             next(e);
         }
     }
-
 }
-
 
 module.exports = new BoardsController()

@@ -6,6 +6,7 @@ const router = require('./routes/index')
 const ColumnsRouter = require('./routes/columns')
 const CardsRouter = require('./routes/cards')
 const BoardRouter = require('./routes/boards')
+const ChecklistRouter = require('./routes/checklist')
 const PORT = process.env.PORT || 4000;
 const app = express()
 
@@ -19,7 +20,8 @@ app.use(cors({
 app.use('/api', router);
 app.use('/columns', ColumnsRouter);
 app.use('/cards', CardsRouter);
-app.use('/boards', BoardRouter)
+app.use('/boards', BoardRouter);
+app.use('/checklist', ChecklistRouter)
 
 const start = async () => {
     try {
