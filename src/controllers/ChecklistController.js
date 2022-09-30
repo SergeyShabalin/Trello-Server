@@ -4,7 +4,6 @@ class ChecklistController {
     async getAllChecklist (req, res, next) {
         try {
             const deviceData = await checklistModel.find({})
-            console.log(deviceData, checklistModel)
             return res.json(deviceData)
 
         } catch (e) {
@@ -14,10 +13,10 @@ class ChecklistController {
 
     async newTask (req, res, next) {
         try {
-            const columnNew = new checklistModel({task: 'написать план', done: false})
-            await columnNew.save()
-            console.log(checklistModel)
-            return res.json(columnNew)
+            console.log(res)
+            const taskNew = new checklistModel({task: 'написать план', done: false})
+            await taskNew.save()
+            return res.json(taskNew)
 
         } catch (e) {
             next(e);

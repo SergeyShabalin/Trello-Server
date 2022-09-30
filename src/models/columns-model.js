@@ -1,7 +1,7 @@
 const {Schema, model} = require('mongoose');
 
 const ColumnsSchema = new Schema({
-    header: {type: String, unique: true, required: false},
+    header: {type: String, unique: false, required: false},
     cards: [{type: Schema.Types.ObjectId, ref: 'cards', unique:false}],
 })
 

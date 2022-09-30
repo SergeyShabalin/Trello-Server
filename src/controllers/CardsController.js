@@ -1,16 +1,28 @@
 const cardsModel = require('../models/cards-model')
+const CardService = require('../services/Card-service')
 
 class CardsController {
     async getAllCards (req, res, next) {
         try {
-            const deviceData = await cardsModel.find({})
-            console.log(deviceData, cardsModel)
-            return res.json(deviceData)
+            const cardData = await cardsModel.find({})
+            console.log(cardData, cardsModel)
+            return res.json(cardData)
 
         } catch (e) {
             next(e);
         }
     }
+
+    async getOneCard(req, res, next) {
+        try {
+            const card = await CardService.getOne(req);
+            console.log(card)
+            return res.json(card);
+        } catch (e) {
+            next(e);
+        }
+    }
+
 
     async newCard (req, res, next) {
         try {
