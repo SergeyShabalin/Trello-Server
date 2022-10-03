@@ -5,7 +5,6 @@ class CardsController {
     async getAllCards (req, res, next) {
         try {
             const cardData = await cardsModel.find({})
-            console.log(cardData, cardsModel)
             return res.json(cardData)
 
         } catch (e) {
@@ -16,7 +15,6 @@ class CardsController {
     async getOneCard(req, res, next) {
         try {
             const card = await CardService.getOne(req);
-            console.log(card)
             return res.json(card);
         } catch (e) {
             next(e);
@@ -28,7 +26,6 @@ class CardsController {
         try {
             const columnNew = new cardsModel(res)
             await columnNew.save()
-            console.log(cardsModel)
             return res.json(columnNew)
 
         } catch (e) {

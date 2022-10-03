@@ -13,7 +13,8 @@ class ColumnsController {
 
     async newColumn (req, res, next) {
         try {
-            const columnNew = new columnsModel({header: 'новая колонка', cards: []})
+            console.log('res', req.body)
+            const columnNew = new columnsModel(req.body)
             await columnNew.save()
             return res.json(columnNew)
 
