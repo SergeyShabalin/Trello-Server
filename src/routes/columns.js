@@ -4,5 +4,6 @@ const ColumnsRouter = new Router();
 //get post delete patch
 ColumnsRouter.get('/', controller.getAllColumns)
 ColumnsRouter.post('/new', controller.newColumn)
+ColumnsRouter.delete('/delete/:id', controller.deleteColumn)
 
 module.exports = ColumnsRouter

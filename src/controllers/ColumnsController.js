@@ -9,15 +9,25 @@ class ColumnsController {
         } catch (e) {
             next(e);
         }
-}
+   }
 
     async newColumn (req, res, next) {
         try {
-            console.log('res', req.body)
             const columnNew = new columnsModel(req.body)
             await columnNew.save()
             return res.json(columnNew)
 
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async deleteColumn(req, res, next) {
+        console.log('params',req)
+        try {
+            const isDelete = await columnsModel.remove({_id:req.params.id})
+            if(isDelete)res.send('device deleted')
+            else res.send('the error deleted')
         } catch (e) {
             next(e);
         }

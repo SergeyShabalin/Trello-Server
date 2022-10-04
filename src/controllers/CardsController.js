@@ -21,7 +21,6 @@ class CardsController {
         }
     }
 
-
     async newCard (req, res, next) {
         try {
             const columnNew = new cardsModel(res)
