@@ -5,5 +5,6 @@ const ColumnsRouter = new Router();
 ColumnsRouter.get('/', controller.getAllColumns)
 ColumnsRouter.post('/new', controller.newColumn)
 ColumnsRouter.delete('/delete/:id', controller.deleteColumn)
+ColumnsRouter.patch('/update/:id', controller.updateColumn)
 
 module.exports = ColumnsRouter
