@@ -4,7 +4,8 @@ const columnService = require('../services/Column-service')
 class ColumnsController {
     async getAllColumns (req, res, next) {
         try {
-            const deviceData = await columnsModel.find({})
+            const deviceData = await columnsModel.find({}).populate('cards')
+            console.log(deviceData)
             return res.json(deviceData)
 
         } catch (e) {

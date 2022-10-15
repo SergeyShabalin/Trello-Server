@@ -7,4 +7,4 @@ const CardsSchema = new Schema({
     checkList: [{type: Schema.Types.ObjectId, ref: 'checkList', unique:false}]
 })
 
-module.exports = model('сards', CardsSchema);
+module.exports = model('Cards', CardsSchema);

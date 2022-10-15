@@ -14,12 +14,13 @@ class CardsController {
 
     async getOneCard(req, res, next) {
         try {
-            const card = await CardService.getOne(req);
+            const card = await CardService.getOne(req.params.id);
             return res.json(card);
         } catch (e) {
             next(e);
         }
     }
+
 
     async newCard (req, res, next) {
         try {
