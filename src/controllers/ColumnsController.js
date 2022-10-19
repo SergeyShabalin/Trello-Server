@@ -14,6 +14,7 @@ class ColumnsController {
    }
 
     async newColumn (req, res, next) {
+        console.log(req.body)
         try {
             const columnNew = new columnsModel(req.body)
             await columnNew.save()

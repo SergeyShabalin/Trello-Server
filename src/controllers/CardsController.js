@@ -1,5 +1,6 @@
 const cardsModel = require('../models/cards-model')
 const CardService = require('../services/Card-service')
+const columnsModel = require("../models/columns-model");
 
 class CardsController {
     async getAllCards (req, res, next) {
@@ -23,15 +24,23 @@ class CardsController {
 
 
     async newCard (req, res, next) {
+        console.log('body',req.body)
         try {
-            const columnNew = new cardsModel(res)
-            await columnNew.save()
-            return res.json(columnNew)
+            const cardNew = new cardsModel(req.body)
+            await cardNew.save()
+
+            const column = await columnsModel.findOne({_id: req.body.columnId})
+            column.cards.push(cardNew._id)
+
+            await column.save()
+
+            return res.json(cardNew)
 
         } catch (e) {
             next(e);
         }
     }
+
 
 }
 
