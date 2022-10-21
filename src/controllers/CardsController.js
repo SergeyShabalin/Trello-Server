@@ -2,29 +2,10 @@ const cardsModel = require('../models/cards-model')
 const CardService = require('../services/Card-service')
 const columnsModel = require("../models/columns-model");
 
+
 class CardsController {
-    async getAllCards(req, res, next) {
-        try {
-            const cardData = await cardsModel.find({})
-            return res.json(cardData)
-
-        } catch (e) {
-            next(e);
-        }
-    }
-
-    async getOneCard(req, res, next) {
-        try {
-            const card = await CardService.getOne(req.params.id);
-            return res.json(card);
-        } catch (e) {
-            next(e);
-        }
-    }
-
 
     async newCard(req, res, next) {
-        console.log('приходящий тайтл', req.body)
         try {
             const cardNew = new cardsModel(req.body)
             await cardNew.save()
@@ -39,18 +20,26 @@ class CardsController {
     }
 
     async deleteCard(req, res, next) {
+
         try {
             const card = await cardsModel.findOne({_id: req.params.id})
-            const columnId = card.column_id
-            const column = await columnsModel.findOne({_id: columnId})
-            let myIndex = column.cards.indexOf(req.params.id);
-            column.cards.splice(myIndex, 1)
+            const column = await columnsModel.findOne({_id: card.column_id})
+            column.cards = column.cards.filter(item => item.toString() !== req.params.id.toString())
             await column.save()
             await cardsModel.deleteOne({_id: req.params.id})
         } catch (e) {
             next(e);
         }
 
+    }
+
+    async updateCard(req, res, next) {
+        try {
+            const Card = await CardService.update(req.body, req.params.id)
+            return res.json(Card)
+        } catch (e) {
+            next(e);
+        }
     }
 }
 
