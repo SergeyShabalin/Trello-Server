@@ -5,5 +5,6 @@ const CardsRouter = new Router();
 CardsRouter.post('/', controller.newCard)
 CardsRouter.delete('/:id', controller.deleteCard)
 CardsRouter.patch('/:id', controller.updateCard)
+CardsRouter.get('/:id', controller.getCardInfo)
 
 module.exports = CardsRouter

@@ -41,6 +41,15 @@ class CardsController {
             next(e);
         }
     }
+
+    async getCardInfo (req, res, next) {
+        try {
+            const cardData = await cardsModel.findOne({_id: req.params.id}).populate('checkList')
+            return res.json(cardData)
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 

@@ -13,8 +13,8 @@ class CardService {
     async update(data, id) {
         const lastCard = await CardModel.findOne({_id: id})
 
-        if (lastCard.header !== data.header) {
-            await CardModel.updateOne({_id: id}, {header: data.header})
+        if (lastCard !== data ) {
+            await CardModel.updateOne({_id: id}, {header: data.header, description: data.description})
             console.log('успешно обновлено')
         } else console.log('Обновление не требуется')
     }

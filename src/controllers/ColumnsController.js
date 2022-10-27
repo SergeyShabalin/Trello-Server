@@ -4,10 +4,9 @@ const columnService = require('../services/Column-service')
 class ColumnsController {
     async getAllColumns (req, res, next) {
         try {
-            const deviceData = await columnsModel.find({}).populate('cards')
-            console.log(deviceData)
-            return res.json(deviceData)
-
+            const columnData = await columnsModel.find({}).populate('cards')
+            console.log(columnData)
+            return res.json(columnData)
         } catch (e) {
             next(e);
         }
@@ -27,6 +26,8 @@ class ColumnsController {
 
     async deleteColumn(req, res, next) {
         console.log('params',req)
+
+            //TODO сделать удаление карточек из бд вместе с удалением колонки
         try {
             const isDelete = await columnsModel.remove({_id:req.params.id})
             if(isDelete)res.send('device deleted')
