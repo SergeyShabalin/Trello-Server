@@ -22,23 +22,26 @@ class ChecklistController {
             await card.save()
             console.log('Задача добавлена')
             return res.json(checkListNew)
-
         } catch (e) {
             next(e);
         }
     }
 
-    // async newTask (req, res, next) {
-    //     try {
-    //         console.log(res)
-    //         const taskNew = new checklistModel({task: 'написать план', done: false})
-    //         await taskNew.save()
-    //         return res.json(taskNew)
-    //
-    //     } catch (e) {
-    //         next(e);
-    //     }
-    // }
+
+    async deleteTask(req, res, next) {
+
+        try {
+            const task = await checklistModel.findOne({_id: req.params.checkListId})
+            const card = await cardsModel.findOne({_id: task.cardId})
+            const checklistAfterDelete = card.checkList.filter(item => item.toString() !== req.params.checkListId.toString())
+            card.checkList = checklistAfterDelete
+            await checklistModel.deleteOne({_id: req.params.checkListId})
+            await card.save()
+            console.log('задача удалена')
+        } catch (e) {
+            next(e);
+        }
+    }
 
 }
 

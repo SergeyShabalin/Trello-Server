@@ -20,7 +20,6 @@ class CardsController {
     }
 
     async deleteCard(req, res, next) {
-
         try {
             const card = await cardsModel.findOne({_id: req.params.id})
             const column = await columnsModel.findOne({_id: card.column_id})
@@ -30,7 +29,6 @@ class CardsController {
         } catch (e) {
             next(e);
         }
-
     }
 
     async updateCard(req, res, next) {
