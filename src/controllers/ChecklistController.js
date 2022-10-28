@@ -1,6 +1,8 @@
 const checklistModel = require('../models/checklist-model')
 const cardsModel = require("../models/cards-model");
 const columnsModel = require("../models/columns-model");
+const CardService = require("../services/Card-service");
+const ChecklistService = require("../services/Checklist-service")
 
 class ChecklistController {
     async getAllChecklist(req, res, next) {
@@ -29,7 +31,6 @@ class ChecklistController {
 
 
     async deleteTask(req, res, next) {
-
         try {
             const task = await checklistModel.findOne({_id: req.params.checkListId})
             const card = await cardsModel.findOne({_id: task.cardId})
@@ -38,6 +39,20 @@ class ChecklistController {
             await checklistModel.deleteOne({_id: req.params.checkListId})
             await card.save()
             console.log('задача удалена')
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async updateTask(req, res) {
+        try {
+            if (req.body.task === '') {
+                const taskValue = await ChecklistService.updateValue(req.body, req.params.id)
+                return res.json(taskValue)
+            } else {
+                const taskTitle = await ChecklistService.updateTitle(req.body, req.params.id)
+                return res.json(taskTitle)
+            }
         } catch (e) {
             next(e);
         }

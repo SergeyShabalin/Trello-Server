@@ -5,5 +5,6 @@ const ChecklistRouter = new Router();
 ChecklistRouter.get('/', controller.getAllChecklist)
 ChecklistRouter.post('/', controller.newTask)
 ChecklistRouter.delete('/:cardId/:checkListId', controller.deleteTask)
+ChecklistRouter.patch('/:id', controller.updateTask)
 
 module.exports = ChecklistRouter
