@@ -44,15 +44,19 @@ class ChecklistController {
         }
     }
 
-    async updateTask(req, res) {
+    async updateTaskTitle(req, res, next) {
         try {
-            if (req.body.task === '') {
-                const taskValue = await ChecklistService.updateValue(req.body, req.params.id)
-                return res.json(taskValue)
-            } else {
-                const taskTitle = await ChecklistService.updateTitle(req.body, req.params.id)
-                return res.json(taskTitle)
-            }
+            const taskTitle = await ChecklistService.updateTitle(req.body, req.params.id)
+            return res.json(taskTitle)
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async updateTaskValue(req, res, next) {
+        try {
+            const taskValue = await ChecklistService.updateValue(req.body, req.params.id)
+            return res.json(taskValue)
         } catch (e) {
             next(e);
         }

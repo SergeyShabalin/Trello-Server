@@ -31,16 +31,25 @@ class CardsController {
         }
     }
 
-    async updateCard(req, res, next) {
+    async updateCardTitle(req, res, next) {
         try {
-            const Card = await CardService.update(req.body, req.params.id)
+            const Card = await CardService.updateHeader(req.body, req.params.id)
             return res.json(Card)
         } catch (e) {
             next(e);
         }
     }
 
-    async getCardInfo (req, res, next) {
+    async updateCardDescription(req, res, next) {
+        try {
+            const Card = await CardService.updateDescription(req.body, req.params.id)
+            return res.json(Card)
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async getCardInfo(req, res, next) {
         try {
             const cardData = await cardsModel.findOne({_id: req.params.id}).populate('checkList')
             return res.json(cardData)
