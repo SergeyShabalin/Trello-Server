@@ -6,19 +6,14 @@ const checkListModel = require("../models/checklist-model");
 class ColumnsController {
     async getAllColumns(req, res, next) {
         try {
+            //TODO загуглить как доставать поля из Populate достать хэдер, дату и 2 новых добавленных поля
             const columnData = await columnsModel.find({}).populate('cards')
-            const cardData = await cardsModel.find({}).populate('checkList')
-
-            const doneTasks = cardData.map(i => {
-                return i.checkList.filter(i => i.done).length
-            })
-
-            const allTasks = cardData.map(i => {
-                return i.checkList.length
-            })
-
-            const data = {columnData, doneTasks, allTasks}
-            return res.json(data)
+            // const cardData = await cardsModel.find({}).populate('checkList')
+            //
+            // const colId = columnData.map(i=>{
+            //     return [...columnData, i.cards = cardData]
+            // })
+             return res.json(columnData)
         } catch (e) {
             next(e);
         }

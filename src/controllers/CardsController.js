@@ -21,9 +21,7 @@ class CardsController {
     }
 
     async deleteCard(req, res, next) {
-
         try {
-
             const card = await cardsModel.findOne({_id: req.params.id})
             const column = await columnsModel.findOne({_id: card.column_id})
             column.cards = column.cards.filter(item => item.toString() !== req.params.id.toString())
@@ -54,7 +52,6 @@ class CardsController {
     }
 
     async updateCardDecisionDate(req, res, next) {
-        console.log(req.params.id)
         try {
             const Card = await CardService.updateDecisionDate(req.body, req.params.id)
             return res.json(Card)
