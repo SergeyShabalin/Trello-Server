@@ -12,7 +12,6 @@ class CardService {
 
     async updateHeader(data, id) {
         const lastCard = await CardModel.findOne({_id: id})
-
         if (lastCard !== data ) {
             await CardModel.updateOne({_id: id}, {header: data.header})
             console.log('header обновлен')
@@ -22,10 +21,17 @@ class CardService {
 
     async updateDescription(data, id) {
         const lastCard = await CardModel.findOne({_id: id})
-
         if (lastCard !== data ) {
             await CardModel.updateOne({_id: id}, {description: data.description})
             console.log('description обновлен')
+        } else console.log('Обновление не требуется')
+    }
+
+    async updateDecisionDate(data, id) {
+        const lastCard = await CardModel.findOne({_id: id})
+        if (lastCard !== data ) {
+            await CardModel.updateOne({_id: id}, {decisionDate: data.decisionDate})
+            console.log('decisionDate обновлен')
         } else console.log('Обновление не требуется')
     }
 }

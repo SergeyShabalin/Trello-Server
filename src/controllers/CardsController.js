@@ -53,6 +53,16 @@ class CardsController {
         }
     }
 
+    async updateCardDecisionDate(req, res, next) {
+        console.log(req.params.id)
+        try {
+            const Card = await CardService.updateDecisionDate(req.body, req.params.id)
+            return res.json(Card)
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async getCardInfo(req, res, next) {
         try {
             const cardData = await cardsModel.findOne({_id: req.params.id}).populate('checkList')
@@ -64,6 +74,7 @@ class CardsController {
                 description: cardData.description,
                 column_id: cardData.column_id,
                 checkList: cardData.checkList,
+                decisionDate: cardData.decisionDate,
                 columnHeader: column.header
             }
             return res.json(data)

@@ -37,8 +37,6 @@ class ColumnsController {
     }
 
     async deleteColumn(req, res, next) {
-
-        //TODO сделать удаление чеклистов во всех карточках в этой колонке
         try {
             const cardsInColumn = await cardsModel.find({column_id: req.params.id})
             const cardsId = cardsInColumn.map(i => i._id)
@@ -51,7 +49,6 @@ class ColumnsController {
             next(e);
         }
     }
-
 
     async updateColumn(req, res, next) {
         try {
