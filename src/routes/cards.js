@@ -7,6 +7,7 @@ CardsRouter.delete('/:id', controller.deleteCard)
 CardsRouter.patch('/title/:id', controller.updateCardTitle)
 CardsRouter.patch('/descriptions/:id', controller.updateCardDescription)
 CardsRouter.patch('/decisionDate/:id', controller.updateCardDecisionDate)
+CardsRouter.patch('/dragDrop/:id', controller.dragAndDropCard)
 CardsRouter.get('/:id', controller.getCardInfo)
 
 module.exports = CardsRouter

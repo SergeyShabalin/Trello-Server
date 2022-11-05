@@ -34,6 +34,15 @@ class CardService {
             console.log('decisionDate обновлен')
         } else console.log('Обновление не требуется')
     }
+
+    async dragDropCard(data, id) {
+        const currentCard = await CardModel.findOne({_id: id})
+        console.log(currentCard)
+        if (currentCard !== data ) {
+            await CardModel.updateOne({_id: id}, {column_id: data.targetColumn})
+            console.log('decisionDate обновлен')
+        } else console.log('Обновление не требуется')
+    }
 }
 
 module.exports = new CardService();

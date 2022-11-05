@@ -2,6 +2,7 @@ const columnsModel = require('../models/columns-model')
 const cardsModel = require('../models/cards-model')
 const columnService = require('../services/Column-service')
 const checkListModel = require("../models/checklist-model");
+const ColumnsModel = require("../models/columns-model");
 
 class ColumnsController {
     async getAllColumns(req, res, next) {
@@ -53,6 +54,17 @@ class ColumnsController {
             next(e);
         }
     }
+
+    async dragDropCardInColumn(req, res, next) {
+
+        try {
+            const refreshColumn = await columnService.dragDrop(req.body, req.params.id)
+            return res.json(refreshColumn)
+        } catch (e) {
+            next(e);
+        }
+    }
+
 }
 
 module.exports = new ColumnsController()

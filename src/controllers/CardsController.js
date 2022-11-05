@@ -60,6 +60,16 @@ class CardsController {
         }
     }
 
+
+    async dragAndDropCard(req, res, next) {
+        try {
+            const Card = await CardService.dragDropCard(req.body, req.params.id)
+            return res.json(Card)
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async getCardInfo(req, res, next) {
         try {
             const cardData = await cardsModel.findOne({_id: req.params.id}).populate('checkList')
