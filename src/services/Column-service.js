@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const ColumnsModel = require('../models/columns-model');
 const CardsModel = require('../models/cards-model')
 
@@ -13,22 +14,19 @@ class ColumnsService {
     }
 
     async dragDrop(data, id) {
-        // const targetColumn = CardsModel.find({_id: data.targetColumnId})
-        const currentColumn = await ColumnsModel.findOne({_id: id})
-        const cardS = await CardsModel.find({column_id: id})
 
-      const dd =  cardS.filter(item=>item._id !== data.currentCardId)
-        //TODO нужно удалить из currentColumn CurrentCard
+        const currentCard = mongoose.Types.ObjectId(data.currentCardId);
+        const targetCards = await ColumnsModel.find({_id: data.targetColumnId})
+        targetCards.forEach(item => item.cards.push(currentCard))
+        const newCardsInTargetColumn = targetCards[0].cards
+        await ColumnsModel.updateOne({_id: data.targetColumnId}, {cards: newCardsInTargetColumn})
+        console.log('В целевую колонку добавлен id текущей карточки')
 
-        // await ColumnsModel.updateOne({_id: id}, {cards: 'l;jo;j;' })
+        const currentCards = await ColumnsModel.find({_id: id})
+        const b = currentCards.map(item => item.cards.filter(i => i.toLocaleString() !== data.currentCardId))
+        await ColumnsModel.updateOne({_id: id}, {cards: b[0]})
+        console.log('Из текущей колонки удален id текущей карточки')
 
-
-        const card = await CardsModel.findOne({_id: data.currentCardId})
-        const cardT = await CardsModel.find({column_id: data.targetColumnId})
-        cardT.push(card)
-         await ColumnsModel.updateOne({_id: data.targetColumnId}, {cards: cardT })
-                console.log('успешно обновлено')
-        //     } else console.log('Обновление не требуется')
     }
 
 }

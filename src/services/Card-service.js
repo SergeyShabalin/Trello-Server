@@ -1,4 +1,3 @@
-
 const CardModel = require('../models/cards-model');
 const ColumnsModel = require("../models/columns-model");
 
@@ -12,7 +11,7 @@ class CardService {
 
     async updateHeader(data, id) {
         const lastCard = await CardModel.findOne({_id: id})
-        if (lastCard !== data ) {
+        if (lastCard !== data) {
             await CardModel.updateOne({_id: id}, {header: data.header})
             console.log('header обновлен')
         } else console.log('Обновление не требуется')
@@ -21,7 +20,7 @@ class CardService {
 
     async updateDescription(data, id) {
         const lastCard = await CardModel.findOne({_id: id})
-        if (lastCard !== data ) {
+        if (lastCard !== data) {
             await CardModel.updateOne({_id: id}, {description: data.description})
             console.log('description обновлен')
         } else console.log('Обновление не требуется')
@@ -29,18 +28,18 @@ class CardService {
 
     async updateDecisionDate(data, id) {
         const lastCard = await CardModel.findOne({_id: id})
-        if (lastCard !== data ) {
+        if (lastCard !== data) {
             await CardModel.updateOne({_id: id}, {decisionDate: data.decisionDate})
             console.log('decisionDate обновлен')
         } else console.log('Обновление не требуется')
     }
 
     async dragDropCard(data, id) {
+
         const currentCard = await CardModel.findOne({_id: id})
-        console.log(currentCard)
-        if (currentCard !== data ) {
+        if (currentCard !== data) {
             await CardModel.updateOne({_id: id}, {column_id: data.targetColumn})
-            console.log('decisionDate обновлен')
+            console.log('ColumnId у карточки обновлен')
         } else console.log('Обновление не требуется')
     }
 }
