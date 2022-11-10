@@ -8,13 +8,16 @@ class CardsController {
 
     async newCard(req, res, next) {
         try {
-            const cardNew = new cardsModel(req.body)
+            const cards = await cardsModel.find({})
+            const order = cards.map(item => item.order)
+            const maxOrder = (order.length <1 ? 1 : order.reduce((a, b) => a > b ? a : b) +1);
+            const body = {...req.body, order: maxOrder}
+            const cardNew = new cardsModel(body)
             await cardNew.save()
             const column = await columnsModel.findOne({_id: req.body.column_id})
             column.cards.push(cardNew._id)
             await column.save()
             return res.json(cardNew)
-
         } catch (e) {
             next(e);
         }
@@ -26,7 +29,7 @@ class CardsController {
             const column = await columnsModel.findOne({_id: card.column_id})
             column.cards = column.cards.filter(item => item.toString() !== req.params.id.toString())
             await column.save()
-            await checkListModel.remove({cardId: req.params.id })
+            await checkListModel.remove({cardId: req.params.id})
             await cardsModel.deleteOne({_id: req.params.id})
         } catch (e) {
             next(e);

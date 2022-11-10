@@ -7,6 +7,7 @@ const CardsSchema = new Schema({
     decisionDate: {type: Date, unique: false, required: false},
     countTask: {type: Number, unique: false, required: false},
     doneTask: {type: Number, unique: false, required: false},
+    order: {type: Number, unique: false, required: false},
     checkList: [{type: Schema.Types.ObjectId, ref: 'Checklist', unique: false}]
 })
 

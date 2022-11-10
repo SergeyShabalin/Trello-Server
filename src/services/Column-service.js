@@ -6,7 +6,6 @@ class ColumnsService {
 
     async update(data, id) {
         const lastHeader = await ColumnsModel.findOne({_id: id})
-
         if (lastHeader.header !== data.header) {
             await ColumnsModel.updateOne({_id: id}, {header: data.header})
             console.log('успешно обновлено')
@@ -14,7 +13,6 @@ class ColumnsService {
     }
 
     async dragDrop(data, id) {
-
         const currentCard = mongoose.Types.ObjectId(data.currentCardId);
         const targetCards = await ColumnsModel.find({_id: data.targetColumnId})
         targetCards.forEach(item => item.cards.push(currentCard))
@@ -26,7 +24,6 @@ class ColumnsService {
         const b = currentCards.map(item => item.cards.filter(i => i.toLocaleString() !== data.currentCardId))
         await ColumnsModel.updateOne({_id: id}, {cards: b[0]})
         console.log('Из текущей колонки удален id текущей карточки')
-
     }
 
 }
