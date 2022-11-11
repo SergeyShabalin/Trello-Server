@@ -14,6 +14,7 @@ class ColumnsController {
             // const colId = columnData.map(i=>{
             //     return [...columnData, i.cards = cardData]
             // })
+
              return res.json(columnData)
         } catch (e) {
             next(e);

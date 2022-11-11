@@ -10,7 +10,7 @@ class CardsController {
         try {
             const cards = await cardsModel.find({})
             const order = cards.map(item => item.order)
-            const maxOrder = (order.length <1 ? 1 : order.reduce((a, b) => a > b ? a : b) +1);
+            const maxOrder = (order.length <1 ? 2 : order.reduce((a, b) => a > b ? a : b) +2);
             const body = {...req.body, order: maxOrder}
             const cardNew = new cardsModel(body)
             await cardNew.save()

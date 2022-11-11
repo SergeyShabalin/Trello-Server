@@ -37,8 +37,10 @@ class CardService {
     async dragDropCard(data, id) {
 
         const currentCard = await CardModel.findOne({_id: id})
+       const newOrder = data.order+1
+        console.log('newOrder', newOrder)
         if (currentCard !== data) {
-            await CardModel.updateOne({_id: id}, {column_id: data.targetColumn})
+            await CardModel.updateOne({_id: id}, {column_id: data.targetColumn, order: newOrder})
             console.log('ColumnId у карточки обновлен')
         } else console.log('Обновление не требуется')
     }
