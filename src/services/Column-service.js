@@ -14,10 +14,28 @@ class ColumnsService {
 
     async dragDrop(data, id) {
         const currentCard = mongoose.Types.ObjectId(data.currentCardId);
-        const targetCards = await ColumnsModel.find({_id: data.targetColumnId})
-        targetCards.forEach(item => item.cards.push(currentCard))
-        const newCardsInTargetColumn = targetCards[0].cards
-        await ColumnsModel.updateOne({_id: data.targetColumnId}, {cards: newCardsInTargetColumn})
+
+        console.log(data.currentOrder)
+        console.log(data.targetOrder)
+
+        const targetColumn = await ColumnsModel.find({_id: data.targetColumnId})
+
+        targetColumn.forEach(item => {
+            const index = item.sortArr.indexOf(data.targetOrder)+1
+            item.sortArr.splice(index, 0, data.currentOrder)
+            item.cards.push(currentCard)
+            return item.sortArr
+        })
+
+        const newCardsInTargetColumn = targetColumn[0].cards
+        const newSortArrInTargetColumn = targetColumn[0].sortArr
+        console.log(newSortArrInTargetColumn)
+        await ColumnsModel.updateOne({_id: data.targetColumnId}, {
+            cards: newCardsInTargetColumn,
+            sortArr: newSortArrInTargetColumn
+        })
+
+        //TODO МАссив работает, осталось удалить из текущего массива currentOrder
         console.log('В целевую колонку добавлен id текущей карточки')
 
         const currentCards = await ColumnsModel.find({_id: id})

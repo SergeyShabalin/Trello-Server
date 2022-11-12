@@ -2,6 +2,7 @@ const cardsModel = require('../models/cards-model')
 const CardService = require('../services/Card-service')
 const columnsModel = require("../models/columns-model");
 const checkListModel = require("../models/checklist-model")
+const CardModel = require("../models/cards-model");
 
 
 class CardsController {
@@ -10,12 +11,13 @@ class CardsController {
         try {
             const cards = await cardsModel.find({})
             const order = cards.map(item => item.order)
-            const maxOrder = (order.length <1 ? 2 : order.reduce((a, b) => a > b ? a : b) +2);
+            const maxOrder = (order.length < 1 ? 1 : order.reduce((a, b) => a > b ? a : b) + 1);
             const body = {...req.body, order: maxOrder}
             const cardNew = new cardsModel(body)
             await cardNew.save()
             const column = await columnsModel.findOne({_id: req.body.column_id})
             column.cards.push(cardNew._id)
+            column.sortArr.push(maxOrder)
             await column.save()
             return res.json(cardNew)
         } catch (e) {

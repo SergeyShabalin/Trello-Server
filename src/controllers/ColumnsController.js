@@ -10,7 +10,6 @@ class ColumnsController {
             //TODO загуглить как доставать поля из Populate достать хэдер, дату и 2 новых добавленных поля
             const columnData = await columnsModel.find({}).populate('cards')
             // const cardData = await cardsModel.find({}).populate('checkList')
-            //
             // const colId = columnData.map(i=>{
             //     return [...columnData, i.cards = cardData]
             // })
@@ -59,8 +58,11 @@ class ColumnsController {
     async dragDropCardInColumn(req, res, next) {
 
         try {
+            if(req.body.targetColumnId ===req.params.id ){
+                console.log('Карточка перемещена в пределах колнки')
+            } else {
             const refreshColumn = await columnService.dragDrop(req.body, req.params.id)
-            return res.json(refreshColumn)
+            return res.json(refreshColumn) }
         } catch (e) {
             next(e);
         }
