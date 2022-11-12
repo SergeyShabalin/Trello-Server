@@ -14,10 +14,6 @@ class ColumnsService {
 
     async dragDrop(data, id) {
         const currentCard = mongoose.Types.ObjectId(data.currentCardId);
-
-        console.log(data.currentOrder)
-        console.log(data.targetOrder)
-
         const targetColumn = await ColumnsModel.find({_id: data.targetColumnId})
 
         targetColumn.forEach(item => {
@@ -29,7 +25,6 @@ class ColumnsService {
 
         const newCardsInTargetColumn = targetColumn[0].cards
         const newSortArrInTargetColumn = targetColumn[0].sortArr
-        console.log(newSortArrInTargetColumn)
         await ColumnsModel.updateOne({_id: data.targetColumnId}, {
             cards: newCardsInTargetColumn,
             sortArr: newSortArrInTargetColumn
@@ -38,9 +33,18 @@ class ColumnsService {
         //TODO МАссив работает, осталось удалить из текущего массива currentOrder
         console.log('В целевую колонку добавлен id текущей карточки')
 
-        const currentCards = await ColumnsModel.find({_id: id})
-        const b = currentCards.map(item => item.cards.filter(i => i.toLocaleString() !== data.currentCardId))
-        await ColumnsModel.updateOne({_id: id}, {cards: b[0]})
+        const currentColumn = await ColumnsModel.find({_id: id})
+        const b = currentColumn.map(item => {
+          return  item.cards.filter(i => i.toLocaleString() !== data.currentCardId)
+        })
+        console.log(currentColumn)
+        console.log(b)
+        const c = currentColumn.map(card => {
+             return card.sortArr.filter(i=>i !==data.currentOrder)
+        })
+
+
+        await ColumnsModel.updateOne({_id: id}, {cards: b[0], sortArr: c[0]})
         console.log('Из текущей колонки удален id текущей карточки')
     }
 

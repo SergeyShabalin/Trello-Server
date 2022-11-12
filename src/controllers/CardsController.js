@@ -11,6 +11,8 @@ class CardsController {
         try {
             const cards = await cardsModel.find({})
             const order = cards.map(item => item.order)
+                //TODO сделать поле у колонки, в который буду записывать максимальный
+                // TODO ордер, чтобы каждый раз редьюсом не гонять, а просто прибавлять к нему единицу
             const maxOrder = (order.length < 1 ? 1 : order.reduce((a, b) => a > b ? a : b) + 1);
             const body = {...req.body, order: maxOrder}
             const cardNew = new cardsModel(body)
