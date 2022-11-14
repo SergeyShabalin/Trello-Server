@@ -42,22 +42,14 @@ class ColumnsService {
 
     async dragDropInOneColumn(data, id) {
         const currentColumn = await ColumnsModel.find({_id: id})
-    currentColumn.forEach(item => {
+        currentColumn.forEach(item => {
             const currentIndex = item.sortArr.indexOf(data.currentOrder)
             const targetIndex = item.sortArr.indexOf(data.targetOrder)
             item.sortArr.splice(currentIndex, 1)
             item.sortArr.splice(targetIndex, 0, data.currentOrder)
             return item.sortArr
         })
-
-         await ColumnsModel.updateOne({_id: id}, { sortArr: currentColumn[0].sortArr})
-        // item.sortArr.splice(index, 0, data.currentOrder)
-
-
-        // const newSortArr = currentColumn.map(card => {
-        //     return card.sortArr.map(i => i !== data.currentOrder)
-
-
+        await ColumnsModel.updateOne({_id: id}, {sortArr: currentColumn[0].sortArr})
     }
 
 }
