@@ -15,14 +15,12 @@ class ColumnsService {
     async dragDrop(data, id) {
         const currentCard = mongoose.Types.ObjectId(data.currentCardId);
         const targetColumn = await ColumnsModel.find({_id: data.targetColumnId})
-
         targetColumn.forEach(item => {
-            const index = item.sortArr.indexOf(data.targetOrder)+1
+            const index = item.sortArr.indexOf(data.targetOrder) + 1
             item.sortArr.splice(index, 0, data.currentOrder)
             item.cards.push(currentCard)
             return item.sortArr
         })
-
         const newCardsInTargetColumn = targetColumn[0].cards
         const newSortArrInTargetColumn = targetColumn[0].sortArr
         await ColumnsModel.updateOne({_id: data.targetColumnId}, {
@@ -32,14 +30,34 @@ class ColumnsService {
         console.log('В целевую колонку добавлен id текущей карточки')
 
         const currentColumn = await ColumnsModel.find({_id: id})
-        const b = currentColumn.map(item => {
-          return  item.cards.filter(i => i.toLocaleString() !== data.currentCardId)
+        const newCards = currentColumn.map(item => {
+            return item.cards.filter(i => i.toLocaleString() !== data.currentCardId)
         })
-        const c = currentColumn.map(card => {
-             return card.sortArr.filter(i=>i !==data.currentOrder)
+        const newSortArr = currentColumn.map(card => {
+            return card.sortArr.filter(i => i !== data.currentOrder)
         })
-        await ColumnsModel.updateOne({_id: id}, {cards: b[0], sortArr: c[0]})
+        await ColumnsModel.updateOne({_id: id}, {cards: newCards[0], sortArr: newSortArr[0]})
         console.log('Из текущей колонки удален id текущей карточки')
+    }
+
+    async dragDropInOneColumn(data, id) {
+        const currentColumn = await ColumnsModel.find({_id: id})
+    currentColumn.forEach(item => {
+            const currentIndex = item.sortArr.indexOf(data.currentOrder)
+            const targetIndex = item.sortArr.indexOf(data.targetOrder)
+            item.sortArr.splice(currentIndex, 1)
+            item.sortArr.splice(targetIndex, 0, data.currentOrder)
+            return item.sortArr
+        })
+
+         await ColumnsModel.updateOne({_id: id}, { sortArr: currentColumn[0].sortArr})
+        // item.sortArr.splice(index, 0, data.currentOrder)
+
+
+        // const newSortArr = currentColumn.map(card => {
+        //     return card.sortArr.map(i => i !== data.currentOrder)
+
+
     }
 
 }

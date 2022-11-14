@@ -60,6 +60,7 @@ class ColumnsController {
         try {
             if(req.body.targetColumnId ===req.params.id ){
                 console.log('Карточка перемещена в пределах колнки')
+                await columnService.dragDropInOneColumn(req.body, req.params.id)
             } else {
             const refreshColumn = await columnService.dragDrop(req.body, req.params.id)
             return res.json(refreshColumn) }
