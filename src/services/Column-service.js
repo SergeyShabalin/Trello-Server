@@ -29,21 +29,15 @@ class ColumnsService {
             cards: newCardsInTargetColumn,
             sortArr: newSortArrInTargetColumn
         })
-
-        //TODO МАссив работает, осталось удалить из текущего массива currentOrder
         console.log('В целевую колонку добавлен id текущей карточки')
 
         const currentColumn = await ColumnsModel.find({_id: id})
         const b = currentColumn.map(item => {
           return  item.cards.filter(i => i.toLocaleString() !== data.currentCardId)
         })
-        console.log(currentColumn)
-        console.log(b)
         const c = currentColumn.map(card => {
              return card.sortArr.filter(i=>i !==data.currentOrder)
         })
-
-
         await ColumnsModel.updateOne({_id: id}, {cards: b[0], sortArr: c[0]})
         console.log('Из текущей колонки удален id текущей карточки')
     }

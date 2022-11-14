@@ -32,6 +32,7 @@ class CardsController {
             const card = await cardsModel.findOne({_id: req.params.id})
             const column = await columnsModel.findOne({_id: card.column_id})
             column.cards = column.cards.filter(item => item.toString() !== req.params.id.toString())
+            column.sortArr = column.sortArr.filter(i=>i !== card.order)
             await column.save()
             await checkListModel.remove({cardId: req.params.id})
             await cardsModel.deleteOne({_id: req.params.id})
