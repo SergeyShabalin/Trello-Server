@@ -7,5 +7,6 @@ ColumnsRouter.post('/', controller.newColumn)
 ColumnsRouter.delete('/:id', controller.deleteColumn)
 ColumnsRouter.patch('/:id', controller.updateColumn)
 ColumnsRouter.patch('/dragDrop/:id', controller.dragDropCardInColumn)
+ColumnsRouter.patch('/dragDropToEmpty/:id', controller.dragDropCardToEmpty)
 
 module.exports = ColumnsRouter

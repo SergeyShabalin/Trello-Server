@@ -40,6 +40,7 @@ class ColumnsService {
         console.log('Из текущей колонки удален id текущей карточки')
     }
 
+
     async dragDropInOneColumn(data, id) {
         const currentColumn = await ColumnsModel.find({_id: id})
         currentColumn.forEach(item => {
@@ -50,6 +51,35 @@ class ColumnsService {
             return item.sortArr
         })
         await ColumnsModel.updateOne({_id: id}, {sortArr: currentColumn[0].sortArr})
+    }
+
+    async dragDropToEmptyColumn(data, id) {
+
+        const cardCurrent = mongoose.Types.ObjectId(data.currentCardId);
+        const targetColumn = await ColumnsModel.find({_id: data.targetColumnId})
+        targetColumn.forEach(item => {
+            // const index = item.sortArr.indexOf(data.targetOrder) + 1
+            item.sortArr.splice(0, 0, data.currentOrder)
+            item.cards.push(cardCurrent)
+            return item.sortArr
+        })
+        const newCards = targetColumn[0].cards
+        const newSortArr = targetColumn[0].sortArr
+        await ColumnsModel.updateOne({_id: data.targetColumnId}, {
+            cards: newCards,
+            sortArr: newSortArr
+        })
+        console.log('В пустую колонку добавлен id текущей карточки')
+
+        const columnCurrent  = await ColumnsModel.find({_id: id})
+        const newCardsForCurrent = columnCurrent.map(item => {
+            return item.cards.filter(i => i.toLocaleString() !== data.currentCardId)
+        })
+        const newSortArrForCurrent = columnCurrent.map(card => {
+            return card.sortArr.filter(i => i !== data.currentOrder)
+        })
+        await ColumnsModel.updateOne({_id: id}, {cards: newCardsForCurrent[0], sortArr: newSortArrForCurrent[0]})
+        console.log('Из текущей колонки удален id текущей карточки')
     }
 
 }

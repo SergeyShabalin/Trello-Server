@@ -14,7 +14,7 @@ class ColumnsController {
             //     return [...columnData, i.cards = cardData]
             // })
 
-             return res.json(columnData)
+            return res.json(columnData)
         } catch (e) {
             next(e);
         }
@@ -56,14 +56,24 @@ class ColumnsController {
     }
 
     async dragDropCardInColumn(req, res, next) {
+            try {
+                if (req.body.targetColumnId === req.params.id) {
+                    await columnService.dragDropInOneColumn(req.body, req.params.id)
+                    console.log('Карточка перемещена в пределах колнки')
+                } else {
+                    console.log('Карточка перемещена в другую колнку')
+                    const refreshColumn = await columnService.dragDrop(req.body, req.params.id)
+                    return res.json(refreshColumn)
+                }
+            } catch (e) {
+                next(e);
+            }
+    }
 
+    async dragDropCardToEmpty(req, res, next) {
         try {
-            if(req.body.targetColumnId ===req.params.id ){
-                console.log('Карточка перемещена в пределах колнки')
-                await columnService.dragDropInOneColumn(req.body, req.params.id)
-            } else {
-            const refreshColumn = await columnService.dragDrop(req.body, req.params.id)
-            return res.json(refreshColumn) }
+            await columnService.dragDropToEmptyColumn(req.body, req.params.id)
+            console.log('Карточка перемещена в пустую колонку')
         } catch (e) {
             next(e);
         }
