@@ -37,6 +37,14 @@ class CardService {
     async dragDropCard(data, id) {
         const currentCard = await CardModel.findOne({_id: id})
         if (currentCard !== data) {
+            await CardModel.updateOne({_id: id}, {column_id: data.targetColumnId})
+            console.log('ColumnId у карточки обновлен')
+        } else console.log('Обновление не требуется')
+    }
+
+    async dragDropCardToEmpty(data, id) {
+        const currentCard = await CardModel.findOne({_id: id})
+        if (currentCard !== data) {
             await CardModel.updateOne({_id: id}, {column_id: data.targetColumn})
             console.log('ColumnId у карточки обновлен')
         } else console.log('Обновление не требуется')

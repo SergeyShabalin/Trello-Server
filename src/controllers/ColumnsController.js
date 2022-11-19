@@ -1,5 +1,6 @@
 const columnsModel = require('../models/columns-model')
 const cardsModel = require('../models/cards-model')
+const cardsController = require('../controllers/CardsController')
 const columnService = require('../services/Column-service')
 const checkListModel = require("../models/checklist-model");
 const ColumnsModel = require("../models/columns-model");
@@ -21,8 +22,9 @@ class ColumnsController {
     }
 
     async newColumn(req, res, next) {
-        console.log(req.body)
         try {
+            //TODO Добавить id доски
+            console.log(req.body)
             const columnNew = new columnsModel(req.body)
             await columnNew.save()
             return res.json(columnNew)
@@ -56,24 +58,30 @@ class ColumnsController {
     }
 
     async dragDropCardInColumn(req, res, next) {
-            try {
-                if (req.body.targetColumnId === req.params.id) {
-                    await columnService.dragDropInOneColumn(req.body, req.params.id)
-                    console.log('Карточка перемещена в пределах колнки')
-                } else {
-                    console.log('Карточка перемещена в другую колнку')
-                    const refreshColumn = await columnService.dragDrop(req.body, req.params.id)
-                    return res.json(refreshColumn)
-                }
-            } catch (e) {
-                next(e);
-            }
+        try {
+            const refreshColumn = await columnService.dragDrop(req.body, req.params.id)
+            console.log('Карточка перемещена в другую колнку')
+            return res.json(refreshColumn)
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async dragDropCardInOneColumn(req, res, next) {
+        try {
+            const refreshColumn = await columnService.dragDropInOneColumn(req.body, req.params.id)
+            console.log('Карточка перемещена в пределах колнки')
+            return res.json(refreshColumn)
+        } catch (e) {
+            next(e);
+        }
     }
 
     async dragDropCardToEmpty(req, res, next) {
         try {
-            await columnService.dragDropToEmptyColumn(req.body, req.params.id)
+            const refreshColumn = await columnService.dragDropToEmptyColumn(req.body, req.params.id)
             console.log('Карточка перемещена в пустую колонку')
+            return res.json(refreshColumn)
         } catch (e) {
             next(e);
         }

@@ -28,6 +28,7 @@ class CardsController {
     }
 
     async deleteCard(req, res, next) {
+        //TODO пофиксить удаление не меняет column_id поле в карточке при переносе в пустую строку
         try {
             const card = await cardsModel.findOne({_id: req.params.id})
             const column = await columnsModel.findOne({_id: card.column_id})
@@ -71,6 +72,7 @@ class CardsController {
 
     async dragAndDropCard(req, res, next) {
         try {
+            console.log('В карточке изменен columnId')
             const Card = await CardService.dragDropCard(req.body, req.params.id)
             return res.json(Card)
         } catch (e) {

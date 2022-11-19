@@ -3,9 +3,9 @@ const boardsModel = require('../models/boards-model')
 class BoardsController {
     async getAllBoards (req, res, next) {
         try {
-            const deviceData = await boardsModel.find({})
-            console.log(deviceData, boardsModel)
-            return res.json(deviceData)
+            const boardData = await boardsModel.find({})
+            console.log(boardData)
+            return res.json(boardData)
 
         } catch (e) {
             next(e);

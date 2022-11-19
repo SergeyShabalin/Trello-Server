@@ -5,4 +5,4 @@ const BoardsSchema = new Schema({
     columns: [{type: Schema.Types.ObjectId, ref: 'columns', unique:false}],
 })
 
-module.exports = model('boards', BoardsSchema);
+module.exports = model('Boards', BoardsSchema);
