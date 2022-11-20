@@ -24,7 +24,6 @@ class ColumnsController {
     async newColumn(req, res, next) {
         try {
             //TODO Добавить id доски
-            console.log(req.body)
             const columnNew = new columnsModel(req.body)
             await columnNew.save()
             return res.json(columnNew)
