@@ -3,6 +3,7 @@ const CardService = require('../services/Card-service')
 const columnsModel = require("../models/columns-model");
 const checkListModel = require("../models/checklist-model")
 const CardModel = require("../models/cards-model");
+const boardsModel = require("../models/boards-model");
 
 
 class CardsController {
@@ -34,6 +35,7 @@ class CardsController {
             const column = await columnsModel.findOne({_id: card.column_id})
             column.cards = column.cards.filter(item => item.toString() !== req.params.id.toString())
             column.sortArr = column.sortArr.filter(i=>i !== card.order)
+
             await column.save()
             await checkListModel.remove({cardId: req.params.id})
             await cardsModel.deleteOne({_id: req.params.id})

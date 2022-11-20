@@ -5,6 +5,7 @@ const BoardsRouter = new Router();
 BoardsRouter.get('/', controller.getAllBoards)
 BoardsRouter.post('/new', controller.newBoard)
 BoardsRouter.patch('/addNewColumn/:id', controller.addNewColumn)
+BoardsRouter.delete('/deleteColumn/:id', controller.deleteColumn)
 
 
 module.exports = BoardsRouter

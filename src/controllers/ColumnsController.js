@@ -4,6 +4,7 @@ const cardsController = require('../controllers/CardsController')
 const columnService = require('../services/Column-service')
 const checkListModel = require("../models/checklist-model");
 const ColumnsModel = require("../models/columns-model");
+const boardsModel = require("../models/boards-model");
 
 class ColumnsController {
     async getAllColumns(req, res, next) {
@@ -26,8 +27,10 @@ class ColumnsController {
             //TODO Добавить id доски
             const columnNew = new columnsModel(req.body)
             await columnNew.save()
-            return res.json(columnNew)
-
+            const currentBoard = await boardsModel.findOne({_id: req.body.boardId})
+            currentBoard.columns.push(columnNew._id)
+            await currentBoard.save()
+            return res.json(currentBoard)
         } catch (e) {
             next(e);
         }
@@ -39,7 +42,13 @@ class ColumnsController {
             const cardsId = cardsInColumn.map(i => i._id)
             await checkListModel.remove({cardId: cardsId})
             const isDeleteCardsInColumn = await cardsModel.remove({column_id: req.params.id})
+
+            const currentColumn = await columnsModel.findOne({_id: req.params.id})
+            const currentBoard = await boardsModel.findOne({_id: currentColumn.boardId})
+            currentBoard.columns = currentBoard.columns.filter(item => item.toString() !== currentColumn._id.toString())
+
             const isDelete = await columnsModel.remove({_id: req.params.id})
+            await currentBoard.save()
             if (isDelete && isDeleteCardsInColumn) res.send('column deleted')
             else res.send('the error deleted')
         } catch (e) {
