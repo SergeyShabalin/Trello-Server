@@ -27,14 +27,12 @@ class ColumnsController {
 
     async newColumn(req, res, next) {
         try {
-            //TODO Добавить id доски
             const columnNew = new columnsModel(req.body)
             await columnNew.save()
             const currentBoard = await boardsModel.findOne({_id: req.body.boardId})
             currentBoard.columns.push(columnNew._id)
             await currentBoard.save()
-            console.log(currentBoard)
-            return res.json(currentBoard)
+            return res.json(columnNew)
         } catch (e) {
             next(e);
         }
