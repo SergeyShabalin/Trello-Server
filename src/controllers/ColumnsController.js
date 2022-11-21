@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const columnsModel = require('../models/columns-model')
 const cardsModel = require('../models/cards-model')
 const cardsController = require('../controllers/CardsController')
@@ -10,13 +11,15 @@ class ColumnsController {
     async getAllColumns(req, res, next) {
         try {
             //TODO загуглить как доставать поля из Populate достать хэдер, дату и 2 новых добавленных поля
-            const columnData = await columnsModel.find({}).populate('cards')
-            // const cardData = await cardsModel.find({}).populate('checkList')
-            // const colId = columnData.map(i=>{
-            //     return [...columnData, i.cards = cardData]
-            // })
-
-            return res.json(columnData)
+            if (req.params.id) {
+                const columnData = await columnsModel.find({}).populate('cards')
+                const boardData = await boardsModel.find({_id: req.params.id})
+                const currentColumns = boardData[0].columns.map(item => {
+                    return columnData.find(i => i._id.toString() === item.toString())
+                })
+                return res.json(currentColumns)
+            } else
+                return res.json([])
         } catch (e) {
             next(e);
         }
@@ -30,6 +33,7 @@ class ColumnsController {
             const currentBoard = await boardsModel.findOne({_id: req.body.boardId})
             currentBoard.columns.push(columnNew._id)
             await currentBoard.save()
+            console.log(currentBoard)
             return res.json(currentBoard)
         } catch (e) {
             next(e);
