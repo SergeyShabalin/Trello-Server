@@ -15,7 +15,8 @@ class CardsController {
                 //TODO сделать поле у колонки, в который буду записывать максимальный
                 // TODO ордер, чтобы каждый раз редьюсом не гонять, а просто прибавлять к нему единицу
             const maxOrder = (order.length < 1 ? 1 : order.reduce((a, b) => a > b ? a : b) + 1);
-            const body = {...req.body, order: maxOrder}
+            const body = {...req.body, header: req.body.header, order: maxOrder}
+            if (req.body.header === '') {body.header = 'Новая карточка'}
             const cardNew = new cardsModel(body)
             await cardNew.save()
             const column = await columnsModel.findOne({_id: req.body.column_id})
@@ -29,7 +30,6 @@ class CardsController {
     }
 
     async deleteCard(req, res, next) {
-        //TODO пофиксить удаление не меняет column_id поле в карточке при переносе в пустую строку
         try {
             const card = await cardsModel.findOne({_id: req.params.id})
             const column = await columnsModel.findOne({_id: card.column_id})

@@ -13,7 +13,7 @@ class ColumnsService {
     }
 
     async dragDrop(data, id) {
-        const currentCard = mongoose.Types.ObjectId(data.currentCardId);
+        const currentCard = mongoose.Types.ObjectId(data.currentCard._id);
         const targetColumn = await ColumnsModel.find({_id: data.targetColumnId})
         targetColumn.forEach(item => {
             const index = item.sortArr.indexOf(data.targetOrder) + 1
@@ -31,7 +31,7 @@ class ColumnsService {
 
         const currentColumn = await ColumnsModel.find({_id: id})
         const newCards = currentColumn.map(item => {
-            return item.cards.filter(i => i.toLocaleString() !== data.currentCardId)
+            return item.cards.filter(i => i.toLocaleString() !== data.currentCard._id)
         })
         const newSortArr = currentColumn.map(card => {
             return card.sortArr.filter(i => i !== data.currentOrder)

@@ -26,8 +26,16 @@ class ColumnsController {
     }
 
     async newColumn(req, res, next) {
+        const body = {
+            header: req.body.header,
+            sortArr: [],
+            boardId: req.body.boardId
+        }
+        if (req.body.header === '') {
+            body.header = 'Новая колонка'
+        }
         try {
-            const columnNew = new columnsModel(req.body)
+            const columnNew = new columnsModel(body)
             await columnNew.save()
             const currentBoard = await boardsModel.findOne({_id: req.body.boardId})
             currentBoard.columns.push(columnNew._id)
@@ -69,7 +77,7 @@ class ColumnsController {
 
     async dragDropCardInColumn(req, res, next) {
         try {
-            const refreshColumn = await columnService.dragDrop(req.body, req.params.id)
+            const refreshColumn = await columnService.dragDrop(req.body.data, req.params.id)
             console.log('Карточка перемещена в другую колнку')
             return res.json(refreshColumn)
         } catch (e) {
@@ -79,7 +87,7 @@ class ColumnsController {
 
     async dragDropCardInOneColumn(req, res, next) {
         try {
-            const refreshColumn = await columnService.dragDropInOneColumn(req.body, req.params.id)
+            const refreshColumn = await columnService.dragDropInOneColumn(req.body.data, req.params.id)
             console.log('Карточка перемещена в пределах колнки')
             return res.json(refreshColumn)
         } catch (e) {
