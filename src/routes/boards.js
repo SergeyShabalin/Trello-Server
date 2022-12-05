@@ -5,6 +5,7 @@ const BoardsRouter = new Router();
 BoardsRouter.get('/', controller.getAllBoards)
 BoardsRouter.get('/:id', controller.getBoard)
 BoardsRouter.post('/', controller.newBoard)
+BoardsRouter.post('/sample', controller.newBoardSample)
 BoardsRouter.patch('/:id', controller.updateBoard)
 
 

@@ -10,16 +10,8 @@ const boardsModel = require("../models/boards-model");
 class ColumnsController {
     async getAllColumns(req, res, next) {
         try {
-            //TODO загуглить как доставать поля из Populate достать хэдер, дату и 2 новых добавленных поля
-            if (req.params.id) {
-                const columnData = await columnsModel.find({}).populate('cards')
-                const boardData = await boardsModel.find({_id: req.params.id})
-                const currentColumns = boardData[0].columns.map(item => {
-                    return columnData.find(i => i._id.toString() === item.toString())
-                })
-                return res.json(currentColumns)
-            } else
-                return res.json([])
+            const allColumns = await columnService.getAllColumns(req.params.id)
+            return res.json(allColumns)
         } catch (e) {
             next(e);
         }

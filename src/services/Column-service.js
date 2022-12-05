@@ -1,8 +1,22 @@
 const mongoose = require('mongoose');
 const ColumnsModel = require('../models/columns-model');
 const CardsModel = require('../models/cards-model')
+const columnsModel = require("../models/columns-model");
+const boardsModel = require("../models/boards-model");
 
 class ColumnsService {
+
+    async getAllColumns(id) {
+        if (id) {
+            const columnData = await columnsModel.find({}).populate('cards')
+            const boardData = await boardsModel.find({_id: id})
+            const currentColumns = boardData[0].columns.map(item => {
+                return columnData.find(i => i._id.toString() === item.toString())
+            })
+            return  currentColumns
+        } else
+            return  []
+    }
 
     async update(data, id) {
         const lastHeader = await ColumnsModel.findOne({_id: id})
