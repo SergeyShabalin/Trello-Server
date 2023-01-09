@@ -17,6 +17,8 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }));
 
+
+
 app.use('/api', router);
 app.use('/columns', ColumnsRouter);
 app.use('/cards', CardsRouter);

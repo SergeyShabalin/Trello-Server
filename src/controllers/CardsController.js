@@ -12,10 +12,8 @@ class CardsController {
         try {
             const cards = await cardsModel.find({})
             const order = cards.map(item => item.order)
-                //TODO сделать поле у колонки, в который буду записывать максимальный
-                // TODO ордер, чтобы каждый раз редьюсом не гонять, а просто прибавлять к нему единицу
             const maxOrder = (order.length < 1 ? 1 : order.reduce((a, b) => a > b ? a : b) + 1);
-            const body = {...req.body, header: req.body.header, order: maxOrder}
+            const body = {...req.body, header: req.body.header, order: maxOrder, doneTask: 0, countTask: 0}
             if (req.body.header === '') {body.header = 'Новая карточка'}
             const cardNew = new cardsModel(body)
             await cardNew.save()
@@ -32,6 +30,7 @@ class CardsController {
     async deleteCard(req, res, next) {
         try {
             const card = await cardsModel.findOne({_id: req.params.id})
+            console.log(card)
             const column = await columnsModel.findOne({_id: card.column_id})
             column.cards = column.cards.filter(item => item.toString() !== req.params.id.toString())
             column.sortArr = column.sortArr.filter(i=>i !== card.order)
@@ -39,6 +38,8 @@ class CardsController {
             await column.save()
             await checkListModel.remove({cardId: req.params.id})
             await cardsModel.deleteOne({_id: req.params.id})
+
+            return res.json({status:200})
         } catch (e) {
             next(e);
         }
