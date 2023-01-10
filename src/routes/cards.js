@@ -4,9 +4,7 @@ const CardsRouter = new Router();
 
 CardsRouter.post('/', controller.newCard)
 CardsRouter.delete('/:id', controller.deleteCard)
-CardsRouter.patch('/title/:id', controller.updateCardTitle)
-CardsRouter.patch('/descriptions/:id', controller.updateCardDescription)
-CardsRouter.patch('/decisionDate/:id', controller.updateCardDecisionDate)
+CardsRouter.patch('/update/:id', controller.updateCard)
 CardsRouter.patch('/dragDrop/:id', controller.dragAndDropCard)
 CardsRouter.get('/:id', controller.getCardInfo)
 

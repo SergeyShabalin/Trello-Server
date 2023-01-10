@@ -10,18 +10,8 @@ class CardsController {
 
     async newCard(req, res, next) {
         try {
-            const cards = await cardsModel.find({})
-            const order = cards.map(item => item.order)
-            const maxOrder = (order.length < 1 ? 1 : order.reduce((a, b) => a > b ? a : b) + 1);
-            const body = {...req.body, header: req.body.header, order: maxOrder, doneTask: 0, countTask: 0}
-            if (req.body.header === '') {body.header = 'Новая карточка'}
-            const cardNew = new cardsModel(body)
-            await cardNew.save()
-            const column = await columnsModel.findOne({_id: req.body.column_id})
-            column.cards.push(cardNew._id)
-            column.sortArr.push(maxOrder)
-            await column.save()
-            return res.json(cardNew)
+            const newCard = await CardService.addNew(req.body)
+            return res.json(newCard)
         } catch (e) {
             next(e);
         }
@@ -29,49 +19,21 @@ class CardsController {
 
     async deleteCard(req, res, next) {
         try {
-            const card = await cardsModel.findOne({_id: req.params.id})
-            console.log(card)
-            const column = await columnsModel.findOne({_id: card.column_id})
-            column.cards = column.cards.filter(item => item.toString() !== req.params.id.toString())
-            column.sortArr = column.sortArr.filter(i=>i !== card.order)
-
-            await column.save()
-            await checkListModel.remove({cardId: req.params.id})
-            await cardsModel.deleteOne({_id: req.params.id})
-
-            return res.json({status:200})
+            await CardService.delete(req.params.id)
+            return res.json({status: 200})
         } catch (e) {
             next(e);
         }
     }
 
-    async updateCardTitle(req, res, next) {
+    async updateCard(req, res, next) {
         try {
-            const Card = await CardService.updateHeader(req.body, req.params.id)
+            const Card = await CardService.update(req.body, req.params.id)
             return res.json(Card)
         } catch (e) {
             next(e);
         }
     }
-
-    async updateCardDescription(req, res, next) {
-        try {
-            const Card = await CardService.updateDescription(req.body, req.params.id)
-            return res.json(Card)
-        } catch (e) {
-            next(e);
-        }
-    }
-
-    async updateCardDecisionDate(req, res, next) {
-        try {
-            const Card = await CardService.updateDecisionDate(req.body, req.params.id)
-            return res.json(Card)
-        } catch (e) {
-            next(e);
-        }
-    }
-
 
     async dragAndDropCard(req, res, next) {
         try {
