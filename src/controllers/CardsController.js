@@ -28,8 +28,8 @@ class CardsController {
 
     async updateCard(req, res, next) {
         try {
-            const Card = await CardService.update(req.body, req.params.id)
-            return res.json(Card)
+            const changedCard = await CardService.update(req.body, req.params.id)
+             return res.json(changedCard)
         } catch (e) {
             next(e);
         }
@@ -52,12 +52,12 @@ class CardsController {
 
             const data = {
                 _id: cardData._id,
-                header: cardData.header,
+                title: cardData.title,
                 description: cardData.description,
                 column_id: cardData.column_id,
                 checkList: cardData.checkList,
                 decisionDate: cardData.decisionDate,
-                columnHeader: column.header
+                columnHeader: column.title
             }
             return res.json(data)
         } catch (e) {

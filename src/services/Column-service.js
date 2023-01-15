@@ -13,17 +13,22 @@ class ColumnsService {
             const currentColumns = boardData[0].columns.map(item => {
                 return columnData.find(i => i._id.toString() === item.toString())
             })
-            return  currentColumns
+            return currentColumns
         } else
-            return  []
+            return []
     }
 
     async update(data, id) {
-        const lastHeader = await ColumnsModel.findOne({_id: id})
-        if (lastHeader.header !== data.header) {
-            await ColumnsModel.updateOne({_id: id}, {header: data.header})
+        const lastColumn = await ColumnsModel.findOne({_id: id})
+        if (lastColumn.title !== data.title) {
+            await ColumnsModel.updateOne({_id: id}, {title: data.title})
             console.log('успешно обновлено')
-        } else console.log('Обновление не требуется')
+            const newColumn = await ColumnsModel.findOne({_id: id})
+            return newColumn
+        } else {
+            console.log('Обновление не требуется')
+            return lastColumn
+        }
     }
 
     async dragDrop(data, id) {
@@ -84,7 +89,7 @@ class ColumnsService {
         })
         console.log('В пустую колонку добавлен id текущей карточки')
 
-        const columnCurrent  = await ColumnsModel.find({_id: id})
+        const columnCurrent = await ColumnsModel.find({_id: id})
         const newCardsForCurrent = columnCurrent.map(item => {
             return item.cards.filter(i => i.toLocaleString() !== data.currentCardId)
         })

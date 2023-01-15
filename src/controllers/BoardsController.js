@@ -65,7 +65,7 @@ class BoardsController {
             const samples = ['Предстоит сделать', 'В процессе', 'Готово']
             samples.map(item => {
                 const body = {
-                    header: item,
+                    title: item,
                     sortArr: [],
                     boardId: boardNew._id
                 }

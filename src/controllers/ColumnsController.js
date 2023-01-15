@@ -19,12 +19,12 @@ class ColumnsController {
 
     async newColumn(req, res, next) {
         const body = {
-            header: req.body.header,
+            title: req.body.title,
             sortArr: [],
             boardId: req.body.boardId
         }
-        if (req.body.header === '') {
-            body.header = 'Новая колонка'
+        if (req.body.title === '') {
+            body.title = 'Новая колонка'
         }
         try {
             const columnNew = new columnsModel(body)
@@ -61,6 +61,7 @@ class ColumnsController {
     async updateColumn(req, res, next) {
         try {
             const refreshColumn = await columnService.update(req.body, req.params.id)
+            console.log(refreshColumn)
             return res.json(refreshColumn)
         } catch (e) {
             next(e);

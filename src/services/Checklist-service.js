@@ -1,9 +1,7 @@
-const CardModel = require("../models/cards-model");
 const checklistModel = require("../models/checklist-model");
 
 
 class ChecklistService {
-
 
     async updateTitle(data, id) {
         const lastTask = await checklistModel.findOne({_id: id})
