@@ -9,23 +9,26 @@ class ChecklistController {
         try {
             const deviceData = await checklistModel.find({})
             return res.json(deviceData)
-
         } catch (e) {
             next(e);
         }
     }
 
     async newTask(req, res, next) {
-
         try {
-            const checkListNew = new checklistModel(req.body)
+            const body = {...req.body, done: false}
+            const checkListNew = new checklistModel(body)
             await checkListNew.save()
             const card = await cardsModel.findOne({_id: req.body.cardId})
             card.countTask = card.countTask + 1
             card.checkList.push(checkListNew._id)
             await card.save()
             console.log('Задача добавлена')
-            return res.json(checkListNew)
+            const data={
+                task: checkListNew,
+                card
+            }
+            return res.json(data)
         } catch (e) {
             next(e);
         }
@@ -42,15 +45,27 @@ class ChecklistController {
             await checklistModel.deleteOne({_id: req.params.checkListId})
             await card.save()
             console.log('задача удалена')
+            return res.json(card)
+
         } catch (e) {
             next(e);
         }
     }
 
-    async updateTaskTitle(req, res, next) {
+    async updateTask(req, res, next) {
         try {
-            const taskTitle = await ChecklistService.updateTitle(req.body, req.params.id)
-            return res.json(taskTitle)
+            const task = await ChecklistService.updateTask(req.body, req.params.id)
+            const card = await cardsModel.findOne({_id: req.body.cardId})
+            if(!req.body.task){
+            if(req.body.done === true){
+                card.doneTask =  card.doneTask +1
+            } else card.doneTask =  card.doneTask -1}
+            await card.save()
+            const data = {
+                task,
+                card
+            }
+            return res.json(data)
         } catch (e) {
             next(e);
         }

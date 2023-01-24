@@ -37,9 +37,9 @@ class CardsController {
 
     async dragAndDropCard(req, res, next) {
         try {
+        const status =    await CardService.dragDropCard(req.body, req.params.id)
             console.log('В карточке изменен columnId')
-            const Card = await CardService.dragDropCard(req.body, req.params.id)
-            return res.json(Card)
+            return res.json(status)
         } catch (e) {
             next(e);
         }
@@ -58,8 +58,9 @@ class CardsController {
                 checkList: cardData.checkList,
                 decisionDate: cardData.decisionDate,
                 columnHeader: column.title
+
             }
-            return res.json(data)
+            return res.json(cardData)
         } catch (e) {
             next(e);
         }

@@ -6,11 +6,11 @@ const checkListModel = require("../models/checklist-model");
 
 class CardService {
 
-    async addNew(data){
+    async addNew(data) {
         const cards = await cardsModel.find({})
         const order = cards.map(item => item.order)
         const maxOrder = (order.length < 1 ? 1 : order.reduce((a, b) => a > b ? a : b) + 1);
-        const body = {...data, title: data.title, order: maxOrder, doneTask: 0, countTask: 0}
+        const body = {...data, title: data.title, order: maxOrder, doneTask: 0, countTask: 0, decisionDate: null}
         if (data.title === '') {
             body.title = 'Новая карточка'
         }
@@ -20,7 +20,7 @@ class CardService {
         column.cards.push(cardNew._id)
         column.sortArr.push(maxOrder)
         await column.save()
-        return(cardNew)
+        return (cardNew)
     }
 
     async delete(id) {
@@ -45,10 +45,33 @@ class CardService {
 
     async dragDropCard(data, id) {
         const currentCard = await CardModel.findOne({_id: id})
-        if (currentCard !== data) {
-            await CardModel.updateOne({_id: id}, {column_id: data.targetColumnId})
-            console.log('ColumnId у карточки обновлен')
-        } else console.log('Обновление не требуется')
+        if (currentCard !== data) await CardModel.updateOne({_id: id}, {column_id: data.targetColumnId})
+        currentCard.save()
+        const currentColumn = await columnsModel.findOne({_id: data.currentColumnId})
+        const targetColumn = await columnsModel.findOne({_id: data.targetColumnId})
+        const newCardsInCurrentColumn = currentColumn.cards.filter(id => id.toString() !== data.currentCardId.toString())
+        const newArr = []
+
+        if (targetColumn.cards.length === 0) {
+            targetColumn.cards.push(data.currentCardId)
+            targetColumn.save()
+        } else {
+            while (targetColumn.cards.length) {
+                let cardId = targetColumn.cards.shift()
+                if (cardId.toString() !== data.targetCardId.toString()) {
+                    newArr.push(cardId.toString())
+                } else {
+                    newArr.push(cardId.toString())
+                    newArr.push(data.currentCardId.toString())
+                }
+            }
+            targetColumn.cards = newArr
+            targetColumn.save()
+        }
+
+        currentColumn.cards = newCardsInCurrentColumn
+        currentColumn.save()
+        return({status: 200})
     }
 
 }

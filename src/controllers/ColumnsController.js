@@ -32,6 +32,7 @@ class ColumnsController {
             const currentBoard = await boardsModel.findOne({_id: req.body.boardId})
             currentBoard.columns.push(columnNew._id)
             await currentBoard.save()
+            //TODO проверку на добавление новой колонки
             return res.json(columnNew)
         } catch (e) {
             next(e);
