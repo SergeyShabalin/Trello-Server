@@ -48,18 +48,7 @@ class CardsController {
     async getCardInfo(req, res, next) {
         try {
             const cardData = await cardsModel.findOne({_id: req.params.id}).populate('checkList')
-            const column = await columnsModel.findOne({_id: cardData.column_id})
 
-            const data = {
-                _id: cardData._id,
-                title: cardData.title,
-                description: cardData.description,
-                column_id: cardData.column_id,
-                checkList: cardData.checkList,
-                decisionDate: cardData.decisionDate,
-                columnHeader: column.title
-
-            }
             return res.json(cardData)
         } catch (e) {
             next(e);
