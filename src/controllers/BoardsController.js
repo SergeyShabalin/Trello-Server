@@ -1,6 +1,7 @@
 const boardsModel = require('../models/boards-model')
 const columnsModel = require("../models/columns-model");
 const cardsModel = require("../models/cards-model");
+const userModel = require("../models/user-model")
 
 class BoardsController {
 
@@ -45,12 +46,16 @@ class BoardsController {
     }
 
     async newBoard(req, res, next) {
-        const body = {...req.body, title: req.body.title, columns: []}
+        const body = {...req.body, title: req.body.payload.title, user_id:req.body.payload.userId, columns: []}
+        const currentUser = await userModel.findOne({_id: req.body.payload.userId})
         if (req.body.title === '') body.title = 'Новая доска'
-        try {
+         try {
             const boardNew = new boardsModel(body)
-            await boardNew.save()
-            return res.json(boardNew)
+             currentUser.boardIds.push(boardNew._id)
+
+             await currentUser.save()
+             await boardNew.save()
+             return res.json(boardNew)
         } catch (e) {
             next(e);
         }

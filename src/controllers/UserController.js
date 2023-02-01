@@ -9,7 +9,7 @@ const generateAccessToken = (id, email) => {
         id,
         email
     }
-    return jwt.sign(payload, process.env.SECRET, {expiresIn: "12h"} )
+    return jwt.sign(payload, process.env.SECRET, {expiresIn: "12000000000h"} )
 }
 
 class UserController {
@@ -19,12 +19,14 @@ class UserController {
             const {email, password} = req.body;
             const candidate = await UserModel.findOne({email})
             if (candidate) {
-                return res.status(400).json({message: "Пользователь с таким именем уже существует"})
+                return res.status(400).json({message: `Пользователь с email ${email} уже существует`})
             }
             const hashPassword = bcrypt.hashSync(password, 7);
-            const user = new UserModel({...req.body, password: hashPassword })
+            const user = new UserModel({...req.body, password: hashPassword, boardIds: [] })
             await user.save()
-            return res.json({message: "Пользователь успешно зарегистрирован"})
+            const newUser = await UserModel.findOne({email})
+            const token = generateAccessToken(newUser._id, newUser.email)
+            return res.json({...newUser, token})
         } catch (e) {
             next(e)
         }
@@ -59,7 +61,7 @@ class UserController {
 
     async checkLogin(req, res, next) {
         try {
-            const currentUser = await UserModel.findOne({email: req.user.email})
+             const currentUser = await UserModel.findOne({_id : req.params.id})
             if(!currentUser)  return res.status(400).json({message: `Пользователь не авторизован`})
             return res.json({currentUser})
         } catch (e) {

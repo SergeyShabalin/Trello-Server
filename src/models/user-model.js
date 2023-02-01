@@ -7,7 +7,6 @@ const UserSchema = new Schema({
     firstName: {type: String, unique: false, required: false},
     secondName: {type: String, unique: false, required: false},
     lastName: {type: String, unique: false, required: false},
-    birthday: {type: Date, unique: false, required: false},
     token: {type: String, unique: false, required: false},
 })
 

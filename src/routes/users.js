@@ -4,7 +4,7 @@ const UserRouter = new Router();
 
 UserRouter.post('/registration',UserController.registration )
 UserRouter.post('/login',UserController.login )
-UserRouter.post('/checklogin',UserController.checkLogin )
+UserRouter.post('/checklogin/:id',UserController.checkLogin )
 UserRouter.delete('/logout',UserController.logout )
 
 module.exports = UserRouter
