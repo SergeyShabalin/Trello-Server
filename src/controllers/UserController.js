@@ -3,13 +3,12 @@ const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user-model')
 
 
-
 const generateAccessToken = (id, email) => {
     const payload = {
         id,
         email
     }
-    return jwt.sign(payload, process.env.SECRET, {expiresIn: "12000000000h"} )
+    return jwt.sign(payload, process.env.SECRET, {expiresIn: "12000000000h"})
 }
 
 class UserController {
@@ -22,7 +21,7 @@ class UserController {
                 return res.status(400).json({message: `Пользователь с email ${email} уже существует`})
             }
             const hashPassword = bcrypt.hashSync(password, 7);
-            const user = new UserModel({...req.body, password: hashPassword, boardIds: [] })
+            const user = new UserModel({...req.body, password: hashPassword, boardIds: []})
             await user.save()
             const newUser = await UserModel.findOne({email})
             const token = generateAccessToken(newUser._id, newUser.email)
@@ -31,6 +30,7 @@ class UserController {
             next(e)
         }
     }
+
     async login(req, res, next) {
         try {
             const {email, password} = req.body
@@ -61,8 +61,8 @@ class UserController {
 
     async checkLogin(req, res, next) {
         try {
-             const currentUser = await UserModel.findOne({_id : req.params.id})
-            if(!currentUser)  return res.status(400).json({message: `Пользователь не авторизован`})
+            const currentUser = await UserModel.findOne({email: req.user.email})
+            if (!currentUser) return res.status(400).json({message: `Пользователь не авторизован`})
             return res.json({currentUser})
         } catch (e) {
             next(e)
