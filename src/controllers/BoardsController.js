@@ -7,8 +7,8 @@ class BoardsController {
 
     async getAllBoards(req, res, next) {
         try {
-            const boardData = await boardsModel.find({})
-            return res.json(boardData)
+             const boardData = await boardsModel.find({user_id: req.params.id})
+             return res.json(boardData)
         } catch (e) {
             next(e);
         }
