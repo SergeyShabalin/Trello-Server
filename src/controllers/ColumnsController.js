@@ -61,8 +61,9 @@ class ColumnsController {
 
     async updateColumn(req, res, next) {
         try {
-            const refreshColumn = await columnService.update(req.body, req.params.id)
-            console.log(refreshColumn)
+            const body = req.body
+            if (req.body.title === '') body.title = 'Новая колонка'
+            const refreshColumn = await columnService.update(body, req.params.id)
             return res.json(refreshColumn)
         } catch (e) {
             next(e);

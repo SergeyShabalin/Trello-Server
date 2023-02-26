@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user-model')
+const BoardModel = require('../models/boards-model')
 
 
 const generateAccessToken = (id, email) => {
@@ -21,11 +22,12 @@ class UserController {
                 return res.status(400).json({message: `Пользователь с email ${email} уже существует`})
             }
             const hashPassword = bcrypt.hashSync(password, 7);
-            const user = new UserModel({...req.body, password: hashPassword, boardIds: []})
+            const user = new UserModel({...req.body, password: hashPassword, boardIds: [], messages: []})
             await user.save()
+
             const newUser = await UserModel.findOne({email})
             const token = generateAccessToken(newUser._id, newUser.email)
-            return res.json({...newUser, token})
+            return res.json({...newUser, token})//TODO id, name, email
         } catch (e) {
             next(e)
         }
@@ -65,6 +67,25 @@ class UserController {
             if (!currentUser) return res.status(400).json({message: `Пользователь не авторизован`})
             return res.json({currentUser})
         } catch (e) {
+            next(e)
+        }
+    }
+
+    async shareBoard(req, res, next){
+        try{
+//Сделать проверку на отправленное приглашение
+            const currentUser = await UserModel.findOne({_id: req.body._id})
+            const targetUser = await UserModel.findOne({email: req.body.email})
+            const currentBoard = await  BoardModel.findOne({_id: req.body.boardId})
+            console.log(currentUser._id)
+            console.log(targetUser._id)
+            if (!targetUser) return res.status(400).json({message: `Пользователя не существует`})
+            if(currentUser.email === targetUser.email) return res.status(400).json({message: `Вы не можете отправить приглашение самому себе`})
+
+            const newMessage = `Вам пришло приглашение от пользователя ${currentUser.email} на просмотр и редактирование доски  ${currentBoard.title}  Принять?`
+            targetUser.messages.push(newMessage)
+            targetUser.save()
+        } catch(e){
             next(e)
         }
     }

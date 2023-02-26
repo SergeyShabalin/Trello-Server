@@ -28,8 +28,10 @@ class CardsController {
 
     async updateCard(req, res, next) {
         try {
-            const changedCard = await CardService.update(req.body, req.params.id)
-             return res.json(changedCard)
+            const body = req.body
+            if (req.body.title === '') body.title = 'Новая карточка'
+            const changedCard = await CardService.update(body, req.params.id)
+            return res.json(changedCard)
         } catch (e) {
             next(e);
         }
@@ -37,7 +39,7 @@ class CardsController {
 
     async dragAndDropCard(req, res, next) {
         try {
-        const status =    await CardService.dragDropCard(req.body, req.params.id)
+            const status = await CardService.dragDropCard(req.body, req.params.id)
             console.log('В карточке изменен columnId')
             return res.json(status)
         } catch (e) {

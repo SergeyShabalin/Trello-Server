@@ -46,7 +46,7 @@ class BoardsController {
     }
 
     async newBoard(req, res, next) {
-        const body = {...req.body, title: req.body.payload.title, user_id:req.body.payload.userId, columns: []}
+        const body = {...req.body, title: req.body.payload.title, user_id:req.body.payload.userId, columns: [], background: req.body.payload.background}
         const currentUser = await userModel.findOne({_id: req.body.payload.userId})
         if (req.body.title === '') body.title = 'Новая доска'
          try {
@@ -88,10 +88,13 @@ class BoardsController {
     async updateBoard(req, res, next) {
         try {
             const currentBoard = await boardsModel.findOne({_id: req.params.id})
+            const body = req.body
             if (req.body.title === currentBoard.title) {
                 console.log('обновление не требуется')
+                return res.json(currentBoard)
             } else {
-                await boardsModel.updateOne({_id: req.params.id}, req.body)
+                if (req.body.title === '') body.title = 'Новая доска'
+                await boardsModel.updateOne({_id: req.params.id}, body)
                 const newBoard = await boardsModel.findOne({_id: req.params.id})
                 return res.json(newBoard)
             }
