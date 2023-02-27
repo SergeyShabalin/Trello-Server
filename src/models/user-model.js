@@ -8,7 +8,7 @@ const UserSchema = new Schema({
     secondName: {type: String, unique: false, required: false},
     lastName: {type: String, unique: false, required: false},
     token: {type: String, unique: false, required: false},
-    messages: [{type: String, unique: false, required: false}]
+    messages: [{type: Object, unique: false, required: false}]
 })
 
 module.exports = model('User', UserSchema);

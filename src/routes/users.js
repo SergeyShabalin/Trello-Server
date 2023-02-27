@@ -8,5 +8,6 @@ UserRouter.post('/login',UserController.login )
 UserRouter.get('/checkLogin', authMiddleware, UserController.checkLogin )
 UserRouter.delete('/logout',UserController.logout )
 UserRouter.post('/shareBoard',UserController.shareBoard )
+UserRouter.post('/applyInvite',UserController.applyInvite )
 
 module.exports = UserRouter

@@ -77,16 +77,32 @@ class UserController {
             const currentUser = await UserModel.findOne({_id: req.body._id})
             const targetUser = await UserModel.findOne({email: req.body.email})
             const currentBoard = await  BoardModel.findOne({_id: req.body.boardId})
-            console.log(currentUser._id)
-            console.log(targetUser._id)
             if (!targetUser) return res.status(400).json({message: `Пользователя не существует`})
             if(currentUser.email === targetUser.email) return res.status(400).json({message: `Вы не можете отправить приглашение самому себе`})
-
-            const newMessage = `Вам пришло приглашение от пользователя ${currentUser.email} на просмотр и редактирование доски  ${currentBoard.title}  Принять?`
-            targetUser.messages.push(newMessage)
+            const text = `Вам пришло приглашение от пользователя ${currentUser.email} на просмотр и редактирование доски  ${currentBoard.title}  Принять?`
+            const message = {
+                message: text,
+                currentBoardId: currentBoard._id
+            }
+            targetUser.messages.push(message)
             targetUser.save()
+            const targetUserNew = await UserModel.findOne({email: req.body.email})
+            return res.json(targetUserNew.email)
         } catch(e){
             next(e)
+        }
+    }
+
+    async applyInvite(req, res, next){
+        try{
+            const currentUser = await UserModel.findOne({_id: req.body.userId})
+
+            currentUser.boardIds.push(req.body.boardId)
+            currentUser.save()
+
+            return res.json(currentUser)
+        }catch (e){
+
         }
     }
 

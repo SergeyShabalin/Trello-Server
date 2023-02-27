@@ -2,13 +2,25 @@ const boardsModel = require('../models/boards-model')
 const columnsModel = require("../models/columns-model");
 const cardsModel = require("../models/cards-model");
 const userModel = require("../models/user-model")
+const UserModel = require("../models/user-model");
 
 class BoardsController {
 
     async getAllBoards(req, res, next) {
         try {
-             const boardData = await boardsModel.find({user_id: req.params.id})
-             return res.json(boardData)
+            const currentUser = await UserModel.findOne({_id: req.params.id})
+            let boardObj = {}
+            for (let i = 0; i < currentUser.boardIds.length; i++) {
+                const board = currentUser.boardIds[i]
+                const targetBoard = await boardsModel.findOne({_id: board._id})
+                boardObj = {
+                    ...boardObj,
+                    [board._id]: targetBoard
+                }
+            }
+            const newBoardObl = Object.values(boardObj);
+
+            return res.json(newBoardObl)
         } catch (e) {
             next(e);
         }
@@ -31,6 +43,7 @@ class BoardsController {
                 }
             }
 
+
             for (let i = 0; i < columnData.length; i++) {
                 const column = columnData[i]
                 columnObj = {
@@ -46,16 +59,22 @@ class BoardsController {
     }
 
     async newBoard(req, res, next) {
-        const body = {...req.body, title: req.body.payload.title, user_id:req.body.payload.userId, columns: [], background: req.body.payload.background}
+        const body = {
+            ...req.body,
+            title: req.body.payload.title,
+            user_id: req.body.payload.userId,
+            columns: [],
+            background: req.body.payload.background
+        }
         const currentUser = await userModel.findOne({_id: req.body.payload.userId})
         if (req.body.title === '') body.title = 'Новая доска'
-         try {
+        try {
             const boardNew = new boardsModel(body)
-             currentUser.boardIds.push(boardNew._id)
+            currentUser.boardIds.push(boardNew._id)
 
-             await currentUser.save()
-             await boardNew.save()
-             return res.json(boardNew)
+            await currentUser.save()
+            await boardNew.save()
+            return res.json(boardNew)
         } catch (e) {
             next(e);
         }
