@@ -96,11 +96,10 @@ class UserController {
     async applyInvite(req, res, next){
         try{
             const currentUser = await UserModel.findOne({_id: req.body.userId})
-
             currentUser.boardIds.push(req.body.boardId)
             currentUser.save()
-
-            return res.json(currentUser)
+            const currentBoard = await BoardModel.findOne({_id: req.body.boardId})
+            return res.json(currentBoard)
         }catch (e){
 
         }

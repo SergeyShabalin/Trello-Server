@@ -9,18 +9,13 @@ class BoardsController {
     async getAllBoards(req, res, next) {
         try {
             const currentUser = await UserModel.findOne({_id: req.params.id})
-            let boardObj = {}
+            let boards = []
             for (let i = 0; i < currentUser.boardIds.length; i++) {
                 const board = currentUser.boardIds[i]
                 const targetBoard = await boardsModel.findOne({_id: board._id})
-                boardObj = {
-                    ...boardObj,
-                    [board._id]: targetBoard
-                }
+                boards.push(targetBoard)
             }
-            const newBoardObl = Object.values(boardObj);
-
-            return res.json(newBoardObl)
+            return res.json(boards)
         } catch (e) {
             next(e);
         }
