@@ -54,14 +54,15 @@ class BoardsController {
     }
 
     async newBoard(req, res, next) {
+        const currentUser = await userModel.findOne({_id: req.body.payload.userId})
         const body = {
             ...req.body,
             title: req.body.payload.title,
-            user_id: req.body.payload.userId,
+            user_ids: [req.body.payload.userId],
             columns: [],
             background: req.body.payload.background
         }
-        const currentUser = await userModel.findOne({_id: req.body.payload.userId})
+
         if (req.body.title === '') body.title = 'Новая доска'
         try {
             const boardNew = new boardsModel(body)
