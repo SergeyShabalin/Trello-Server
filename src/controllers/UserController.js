@@ -30,7 +30,15 @@ class UserController {
 
             const newUser = await UserModel.findOne({email})
             const token = generateAccessToken(newUser._id, newUser.email)
-            return res.json({...newUser, token})//TODO id, name, email
+            const currentUser = {
+                _id: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+                boardIds: newUser.boardIds,
+                messages: newUser.messages,
+                token: token
+            }
+            return res.json(currentUser)
         } catch (e) {
             next(e)
         }
@@ -49,8 +57,21 @@ class UserController {
             }
             const token = generateAccessToken(user._id, user.email)
             await UserModel.updateOne({email}, {token})
+            const currentUser = await UserModel.findOne({email})
+
+            const newUser = {
+                boardIds: currentUser.boardIds,
+                _id: currentUser._id,
+                email: currentUser.email,
+                firstName: currentUser.firstName,
+                lastName: currentUser.lastName,
+                messages: currentUser.messages,
+                isAuth: true,
+                token
+            }
+
             //TODO не отпарвлять пароль
-            return res.json({...user, token})
+            return res.json(newUser)
         } catch (e) {
             next(e)
         }
@@ -68,7 +89,19 @@ class UserController {
         try {
             const currentUser = await UserModel.findOne({email: req.user.email})
             if (!currentUser) return res.status(400).json({message: `Пользователь не авторизован`})
-            return res.json({currentUser})
+            else {
+                const user = {
+                    boardIds: currentUser.boardIds,
+                    _id: currentUser._id,
+                    messages: currentUser.messages,
+                    email: currentUser.email,
+                    firstName: currentUser.firstName,
+                    secondName: currentUser.secondName,
+                    lastName: currentUser.lastName,
+                    isAuth: true
+                }
+                return res.json(user)
+            }
         } catch (e) {
             next(e)
         }
@@ -148,6 +181,22 @@ class UserController {
             })
 
             return res.json(userList)
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async deleteBoard(req, res, next) {
+        try {
+            const currentUser = await UserModel.findOne({_id: req.body.userId})
+            const newBoards = currentUser.boardIds.filter(id => id.toString() !== req.body.boardId.toString())
+            currentUser.boardIds = newBoards
+            await currentUser.save()
+            const currentBoard = await BoardModel.findOne({_id: req.body.boardId})
+            const newUsers = currentBoard.user_ids.filter(id => id.toString() !== req.body.userId.toString())
+            currentBoard.user_ids = newUsers
+            await currentBoard.save()
+            return res.json(newBoards)
         } catch (e) {
             next(e)
         }
