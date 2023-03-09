@@ -48,7 +48,7 @@ class CardService {
         if (currentCard !== data) await CardModel.updateOne({_id: id}, {column_id: data.targetColumnId})
         currentCard.save()
         const currentColumn = await columnsModel.findOne({_id: data.currentColumnId})
-        const targetColumn = await columnsModel.findOne({_id: data.targetColumnId})
+        const targetColumn =  await columnsModel.findOne({_id: data.targetColumnId})
         const newCardsInCurrentColumn = currentColumn.cards.filter(id => id.toString() !== data.currentCardId.toString())
         const newArr = []
 
@@ -58,8 +58,11 @@ class CardService {
         } else {
             while (targetColumn.cards.length) {
                 let cardId = targetColumn.cards.shift()
+                console.log({cardId})
+                console.log(data.targetCardId)
                 if (cardId.toString() !== data.targetCardId.toString()) {
-                    newArr.push(cardId.toString())
+                    if(cardId.toString() === data.currentCardId.toString()) console.log('текущая карта')
+                    else  newArr.push(cardId.toString())
                 } else {
                     newArr.push(cardId.toString())
                     newArr.push(data.currentCardId.toString())
@@ -69,7 +72,9 @@ class CardService {
             targetColumn.save()
         }
 
-        currentColumn.cards = newCardsInCurrentColumn
+        console.log({newArr})
+
+      if(data.currentColumnId !== data.targetColumnId)  currentColumn.cards = newCardsInCurrentColumn
         currentColumn.save()
         return({status: 200})
     }

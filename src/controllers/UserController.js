@@ -69,8 +69,6 @@ class UserController {
                 isAuth: true,
                 token
             }
-
-            //TODO не отпарвлять пароль
             return res.json(newUser)
         } catch (e) {
             next(e)
@@ -172,7 +170,7 @@ class UserController {
             const userList = currentBoard.user_ids.map(userId => {
                 const user = userData.find(user => user._id.toString() === userId.toString())
                 const userInfo = {
-                    id: user._id,
+                    _id: user._id,
                     email: user.email,
                     firstName: user.firstName,
                     secondName: user.secondName
