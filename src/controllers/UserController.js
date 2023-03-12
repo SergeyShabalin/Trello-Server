@@ -36,6 +36,9 @@ class UserController {
                 email: newUser.email,
                 boardIds: newUser.boardIds,
                 messages: newUser.messages,
+                firstName: newUser.firstName,
+                secondName: newUser.secondName,
+                lastName: newUser.lastName,
                 token: token
             }
             return res.json(currentUser)
@@ -64,6 +67,7 @@ class UserController {
                 _id: currentUser._id,
                 email: currentUser.email,
                 firstName: currentUser.firstName,
+                secondName: currentUser.secondName,
                 lastName: currentUser.lastName,
                 messages: currentUser.messages,
                 isAuth: true,

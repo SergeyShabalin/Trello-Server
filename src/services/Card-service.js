@@ -58,8 +58,6 @@ class CardService {
         } else {
             while (targetColumn.cards.length) {
                 let cardId = targetColumn.cards.shift()
-                console.log({cardId})
-                console.log(data.targetCardId)
                 if (cardId.toString() !== data.targetCardId.toString()) {
                     if(cardId.toString() === data.currentCardId.toString()) console.log('текущая карта')
                     else  newArr.push(cardId.toString())
@@ -72,13 +70,10 @@ class CardService {
             targetColumn.save()
         }
 
-        console.log({newArr})
-
       if(data.currentColumnId !== data.targetColumnId)  currentColumn.cards = newCardsInCurrentColumn
         currentColumn.save()
         return({status: 200})
     }
-
 }
 
 module.exports = new CardService();
