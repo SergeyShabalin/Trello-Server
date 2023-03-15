@@ -20,6 +20,7 @@ class CardService {
         column.cards.push(cardNew._id)
         column.sortArr.push(maxOrder)
         await column.save()
+        console.log('карта добавлена')
         return (cardNew)
     }
 

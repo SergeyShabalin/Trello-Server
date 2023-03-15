@@ -1,19 +1,17 @@
 const cardsModel = require('../models/cards-model')
 const CardService = require('../services/Card-service')
-const columnsModel = require("../models/columns-model");
-const checkListModel = require("../models/checklist-model")
-const CardModel = require("../models/cards-model");
-const boardsModel = require("../models/boards-model");
+
 
 
 class CardsController {
 
-    async newCard(req, res, next) {
+
+    async newCard(req, res) {
         try {
-            const newCard = await CardService.addNew(req.body)
-            return res.json(newCard)
+            const newCard = await CardService.addNew(req)
+            return newCard
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 
