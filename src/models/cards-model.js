@@ -3,7 +3,7 @@ const {Schema, model} = require('mongoose');
 const CardsSchema = new Schema({
     header: {type: String, unique: false, required: true},
     description: {type: String, unique: false, required: false},
-    column_id: {type: Schema.Types.ObjectId, unique: false, ref: 'columns'},
+    column_id: {type: Schema.Types.ObjectId, unique: false, ref: 'allColumns'},
     decisionDate: {type: Date, unique: false, required: false},
     countTask: {type: Number, unique: false, required: false},
     doneTask: {type: Number, unique: false, required: false},

@@ -7,4 +7,4 @@ const ColumnsSchema = new Schema({
     boardId: {type: Schema.Types.ObjectId, unique: false, ref: 'boards'}
 })
 
-module.exports = model('сolumns', ColumnsSchema);
+module.exports = model('allColumns', ColumnsSchema);
