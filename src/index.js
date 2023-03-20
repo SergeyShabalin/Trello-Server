@@ -49,6 +49,7 @@ const start = async () => {
             socket.on('COLUMN_ADD', async (column) => {
                 console.log(column)
                  socket.join(column.boardId)
+                //TODO
                 // const newColumn = await ColumnsController.newColumn(data)
                     socket.broadcast.emit('COLUMN_ADDED', column)
                 // io.to(data.boardId).emit('COLUMN_ADDED', data)
