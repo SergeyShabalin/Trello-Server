@@ -17,25 +17,24 @@ class ColumnsController {
         }
     }
 
-    async newColumn(req, res, next) {
+    async newColumn(req, res) {
         const body = {
-            title: req.body.title,
+            title: req.title,
             sortArr: [],
-            boardId: req.body.boardId
+            boardId: req.boardId
         }
-        if (req.body.title === '') {
+        if (req.title === '') {
             body.title = 'Новая колонка'
         }
-        try {
+         try {
             const columnNew = new columnsModel(body)
             await columnNew.save()
-            const currentBoard = await boardsModel.findOne({_id: req.body.boardId})
+            const currentBoard = await boardsModel.findOne({_id: req.boardId})
             currentBoard.columns.push(columnNew._id)
             await currentBoard.save()
-            //TODO проверку на добавление новой колонки
-            return res.json(columnNew)
+            return columnNew
         } catch (e) {
-            next(e);
+             console.log(e)
         }
     }
 

@@ -15,12 +15,12 @@ class CardsController {
         }
     }
 
-    async deleteCard(req, res, next) {
+    async deleteCard(req, res) {
         try {
             await CardService.delete(req.params.id)
             return res.json({status: 200})
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 
