@@ -100,21 +100,20 @@ class BoardsController {
         }
     }
 
-    async updateBoard(req, res, next) {
+    async updateBoard(req, res) {
         try {
-            const currentBoard = await boardsModel.findOne({_id: req.params.id})
-            const body = req.body
-            if (req.body.title === currentBoard.title) {
+            const currentBoard = await boardsModel.findOne({_id: req._id})
+            if (req.title === currentBoard.title) {
                 console.log('обновление не требуется')
                 return res.json(currentBoard)
             } else {
-                if (req.body.title === '') body.title = 'Новая доска'
-                await boardsModel.updateOne({_id: req.params.id}, body)
-                const newBoard = await boardsModel.findOne({_id: req.params.id})
-                return res.json(newBoard)
+                if (req.title === '') req.title = 'Новая доска'
+                await boardsModel.updateOne({_id: req._id}, req)
+                const newBoard = await boardsModel.findOne({_id: req._id})
+                return newBoard
             }
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 
