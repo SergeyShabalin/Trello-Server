@@ -38,34 +38,34 @@ class ColumnsController {
         }
     }
 
-    async deleteColumn(req, res, next) {
+    async deleteColumn(columnId, res) {
         try {
-            const cardsInColumn = await cardsModel.find({column_id: req.params.id})
+            const cardsInColumn = await cardsModel.find({column_id: columnId})
             const cardsId = cardsInColumn.map(i => i._id)
             await checkListModel.remove({cardId: cardsId})
-            const isDeleteCardsInColumn = await cardsModel.remove({column_id: req.params.id})
+            const isDeleteCardsInColumn = await cardsModel.remove({column_id: columnId})
 
-            const currentColumn = await columnsModel.findOne({_id: req.params.id})
+            const currentColumn = await columnsModel.findOne({_id: columnId})
             const currentBoard = await boardsModel.findOne({_id: currentColumn.boardId})
             currentBoard.columns = currentBoard.columns.filter(item => item.toString() !== currentColumn._id.toString())
 
-            const isDelete = await columnsModel.remove({_id: req.params.id})
+            const isDelete = await columnsModel.remove({_id: columnId})
             await currentBoard.save()
-            if (isDelete && isDeleteCardsInColumn) res.send('column deleted')
-            else res.send('the error deleted')
+
+            if (isDelete && isDeleteCardsInColumn) return(currentBoard)
+            else console.log('the error deleted')
         } catch (e) {
-            next(e);
+            console.log(e)
         }
     }
 
-    async updateColumn(req, res, next) {
+    async updateColumn(req, res) {
         try {
-            const body = req.body
-            if (req.body.title === '') body.title = 'Новая колонка'
-            const refreshColumn = await columnService.update(body, req.params.id)
-            return res.json(refreshColumn)
+            if (req.title === '') req.title = 'Новая колонка'
+            const refreshColumn = await columnService.update(req)
+            return refreshColumn
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 

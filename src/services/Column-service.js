@@ -18,12 +18,12 @@ class ColumnsService {
             return []
     }
 
-    async update(data, id) {
-        const lastColumn = await ColumnsModel.findOne({_id: id})
+    async update(data) {
+        const lastColumn = await ColumnsModel.findOne({_id: data.column_id})
         if (lastColumn.title !== data.title) {
-            await ColumnsModel.updateOne({_id: id}, {title: data.title})
+            await ColumnsModel.updateOne({_id: data.column_id}, {title: data.title})
             console.log('успешно обновлено')
-            const newColumn = await ColumnsModel.findOne({_id: id})
+            const newColumn = await ColumnsModel.findOne({_id: data.column_id})
             return newColumn
         } else {
             console.log('Обновление не требуется')

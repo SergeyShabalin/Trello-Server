@@ -59,16 +59,30 @@ const start = async (eventName, listener) => {
                 socket.disconnect()
             })
 
-            socket.on('COLUMN_ADD', async(column) => {
+            socket.on('COLUMN_ADD', async (column) => {
+                console.log(column)
                 const clients = socket.adapter.rooms.get(column.boardId);
                 console.log(column, socket.id, 'clients:', clients)
                 const newColumn = await ColumnsController.newColumn(column)
                 io.in(column.boardId).emit('COLUMN_ADDED', newColumn)
-
             })
-             console.log('A user connected', socket.id);
-        });
 
+            socket.on('COLUMN_DELETE', async (columnId) => {
+                const currentBoard = await ColumnsController.deleteColumn(columnId)
+                const boardId = currentBoard._id.toString()
+                const columnIds =  currentBoard.columns
+                const data = {columnId, columnIds}
+                io.in(boardId).emit('COLUMN_DELETED', data)
+            })
+
+            socket.on('COLUMN_CHANGE', async (data) => {
+                const currentColumn = await ColumnsController.updateColumn(data)
+                const boardId = currentColumn.boardId.toString()
+                io.in(boardId).emit('COLUMN_CHANGED', currentColumn)
+            })
+
+            console.log('A user connected', socket.id);
+        });
 
 
         await mongoose.connect(process.env.DB_URL, {
