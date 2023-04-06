@@ -19,9 +19,13 @@ class CardService {
         const column = await columnsModel.findOne({_id: data.column_id})
         column.cards.push(cardNew._id)
         column.sortArr.push(maxOrder)
+        const dataCard = {
+            boardId: column.boardId,
+            cardNew
+        }
         await column.save()
         console.log('карта добавлена')
-        return (cardNew)
+        return (dataCard)
     }
 
     async delete(id) {

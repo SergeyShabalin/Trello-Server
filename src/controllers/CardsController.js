@@ -8,8 +8,8 @@ class CardsController {
 
     async newCard(req, res) {
         try {
-            const newCard = await CardService.addNew(req)
-            return newCard
+            const data = await CardService.addNew(req)
+            return data
         } catch (e) {
             console.log(e);
         }

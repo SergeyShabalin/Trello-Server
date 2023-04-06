@@ -88,6 +88,12 @@ const start = async (eventName, listener) => {
                 io.in(boardId).emit('COLUMN_CHANGED', currentColumn)
             })
 
+            socket.on('CARD_ADD', async (data) => {
+                const cardData = await CardsController.newCard(data)
+                const boardId = cardData.boardId.toString()
+                io.in(boardId).emit('CARD_ADDED', cardData.cardNew)
+            })
+
             console.log('A user connected', socket.id);
         });
 
