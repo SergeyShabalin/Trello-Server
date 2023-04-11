@@ -2,7 +2,6 @@ const cardsModel = require('../models/cards-model')
 const CardService = require('../services/Card-service')
 
 
-
 class CardsController {
 
 
@@ -37,11 +36,11 @@ class CardsController {
 
     async dragAndDropCard(req, res, next) {
         try {
-            const status = await CardService.dragDropCard(req.body, req.params.id)
+            const boardId = await CardService.dragDropCard(req)
             console.log('В карточке изменен columnId')
-            return res.json(status)
+            return boardId
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 

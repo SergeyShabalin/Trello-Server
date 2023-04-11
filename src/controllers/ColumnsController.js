@@ -69,13 +69,13 @@ class ColumnsController {
         }
     }
 
-    async dragDropCardInColumn(req, res, next) {
+    async dragDropCardInColumn(req, res) {
         try {
             const refreshColumn = await columnService.dragDrop(req.body.data, req.params.id)
             console.log('Карточка перемещена в другую колнку')
             return res.json(refreshColumn)
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 

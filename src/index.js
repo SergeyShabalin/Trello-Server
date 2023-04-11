@@ -93,6 +93,12 @@ const start = async (eventName, listener) => {
                 const boardId = cardData.boardId.toString()
                 io.in(boardId).emit('CARD_ADDED', cardData.cardNew)
             })
+            socket.on('CARD_DROP', async (data) => {
+              const boardId =  await CardsController.dragAndDropCard(data)
+
+                 io.in(boardId.toString()).emit('CARD_DROPPED', data)
+            })
+
 
             console.log('A user connected', socket.id);
         });

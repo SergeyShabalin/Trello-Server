@@ -48,36 +48,38 @@ class CardService {
         } else console.log('Обновление не требуется')
     }
 
-    async dragDropCard(data, id) {
-        const currentCard = await CardModel.findOne({_id: id})
-        if (currentCard !== data) await CardModel.updateOne({_id: id}, {column_id: data.targetColumnId})
+    async dragDropCard(data) {
+        const {currentColumnId, currentCardId, targetColumnId, targetCardId} = data
+        const currentCard = await CardModel.findOne({_id: currentCardId})
+        if (currentCard !== data) await CardModel.updateOne({_id: currentCardId}, {column_id: targetColumnId})
         currentCard.save()
-        const currentColumn = await columnsModel.findOne({_id: data.currentColumnId})
-        const targetColumn =  await columnsModel.findOne({_id: data.targetColumnId})
-        const newCardsInCurrentColumn = currentColumn.cards.filter(id => id.toString() !== data.currentCardId.toString())
+        const currentColumn = await columnsModel.findOne({_id: currentColumnId})
+        const targetColumn = await columnsModel.findOne({_id: targetColumnId})
+        const newCardsInCurrentColumn = currentColumn.cards.filter(id => id.toString() !== currentCardId.toString())
         const newArr = []
+        const boardId = targetColumn.boardId
 
         if (targetColumn.cards.length === 0) {
-            targetColumn.cards.push(data.currentCardId)
+            targetColumn.cards.push(currentCardId)
             targetColumn.save()
         } else {
             while (targetColumn.cards.length) {
                 let cardId = targetColumn.cards.shift()
-                if (cardId.toString() !== data.targetCardId.toString()) {
-                    if(cardId.toString() === data.currentCardId.toString()) console.log('текущая карта')
-                    else  newArr.push(cardId.toString())
+                if (cardId.toString() !== targetCardId.toString()) {
+                    if (cardId.toString() === currentCardId.toString()) console.log('текущая карта')
+                    else newArr.push(cardId.toString())
                 } else {
                     newArr.push(cardId.toString())
-                    newArr.push(data.currentCardId.toString())
+                    newArr.push(currentCardId.toString())
                 }
             }
             targetColumn.cards = newArr
             targetColumn.save()
         }
 
-      if(data.currentColumnId !== data.targetColumnId)  currentColumn.cards = newCardsInCurrentColumn
+        if (currentColumnId !== targetColumnId) currentColumn.cards = newCardsInCurrentColumn
         currentColumn.save()
-        return({status: 200})
+        return boardId
     }
 }
 
