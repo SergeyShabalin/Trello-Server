@@ -93,10 +93,15 @@ const start = async (eventName, listener) => {
                 const boardId = cardData.boardId.toString()
                 io.in(boardId).emit('CARD_ADDED', cardData.cardNew)
             })
-            socket.on('CARD_DROP', async (data) => {
-              const boardId =  await CardsController.dragAndDropCard(data)
+            socket.on('CARD_DELETE', async (cardId) => {
 
-                 io.in(boardId.toString()).emit('CARD_DROPPED', data)
+             const cardData =   await CardsController.deleteCard(cardId)
+                const boardId = cardData.toString()
+                io.in(boardId).emit('CARD_DELETED', cardId)
+            })
+            socket.on('CARD_DROP', async (data) => {
+                const boardId = await CardsController.dragAndDropCard(data)
+                io.in(boardId.toString()).emit('CARD_DROPPED', data)
             })
 
 

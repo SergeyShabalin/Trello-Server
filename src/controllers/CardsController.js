@@ -14,10 +14,10 @@ class CardsController {
         }
     }
 
-    async deleteCard(req, res) {
+    async deleteCard(cardId) {
         try {
-            await CardService.delete(req.params.id)
-            return res.json({status: 200})
+           const boardId = await CardService.delete(cardId)
+              return boardId
         } catch (e) {
             console.log(e);
         }
