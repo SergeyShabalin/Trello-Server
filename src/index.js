@@ -17,6 +17,7 @@ const ChecklistRouter = require('./routes/checklist')
 const CardsController = require('../src/controllers/CardsController')
 const ColumnsController = require('../src/controllers/ColumnsController')
 const BoardsController = require('../src/controllers/BoardsController')
+const ChecklistController = require('../src/controllers/ChecklistController')
 
 
 const io = new Server(server, {
@@ -94,14 +95,23 @@ const start = async (eventName, listener) => {
                 io.in(boardId).emit('CARD_ADDED', cardData.cardNew)
             })
             socket.on('CARD_DELETE', async (cardId) => {
-
-             const cardData =   await CardsController.deleteCard(cardId)
+                const cardData = await CardsController.deleteCard(cardId)
                 const boardId = cardData.toString()
                 io.in(boardId).emit('CARD_DELETED', cardId)
             })
             socket.on('CARD_DROP', async (data) => {
                 const boardId = await CardsController.dragAndDropCard(data)
                 io.in(boardId.toString()).emit('CARD_DROPPED', data)
+            })
+            socket.on('CARD_CHANGE', async (data) => {
+                const card = await CardsController.updateCard(data)
+                io.in(card.boardId).emit('CARD_CHANGED', card.changedCard)
+            })
+
+            socket.on('TASK_ADD', async (data) => {
+                const task = await ChecklistController.newTask(data)
+                const boardId = task.boardId.toString()
+                io.in(boardId).emit('TASK_ADDED', task)
             })
 
 

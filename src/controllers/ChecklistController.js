@@ -16,21 +16,24 @@ class ChecklistController {
 
     async newTask(req, res, next) {
         try {
-            const body = {...req.body, done: false}
+            const body = {...req, done: false}
             const checkListNew = new checklistModel(body)
             await checkListNew.save()
-            const card = await cardsModel.findOne({_id: req.body.cardId})
+            const card = await cardsModel.findOne({_id: req.cardId})
             card.countTask = card.countTask + 1
             card.checkList.push(checkListNew._id)
+            const currentColumn = await columnsModel.findOne({_id: card.column_id})
+
             await card.save()
             console.log('Задача добавлена')
             const data={
                 task: checkListNew,
+                boardId: currentColumn.boardId,
                 card
             }
-            return res.json(data)
+            return  data
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 

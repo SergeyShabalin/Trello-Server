@@ -45,8 +45,17 @@ class CardService {
         if (currentCard !== data) {
             await CardModel.updateOne({_id: data._id}, data)
             const changedCard = await CardModel.findOne({_id: data._id})
+            const currentColumnId =  changedCard.column_id.toString()
+            const currentColumn = await columnsModel.findOne({_id: currentColumnId})
+            const currentBoardId = currentColumn.boardId.toString()
+            await changedCard.save()
             console.log('карточка обновлена')
-            return changedCard
+
+            const card = {
+                changedCard,
+                boardId: currentBoardId
+            }
+            return card
         } else console.log('Обновление не требуется')
     }
 

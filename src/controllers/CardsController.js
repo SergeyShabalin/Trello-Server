@@ -23,14 +23,14 @@ class CardsController {
         }
     }
 
-    async updateCard(req, res, next) {
+    async updateCard(data, res, next) {
         try {
-            const body = req.body
-            if (req.body.title === '') body.title = 'Новая карточка'
-            const changedCard = await CardService.update(body, req.params.id)
-            return res.json(changedCard)
+
+            if (data.title === '') data.title = 'Новая карточка'
+            const changedCard = await CardService.update(data, data._id)
+            return  changedCard
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 
