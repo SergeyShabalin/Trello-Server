@@ -40,37 +40,42 @@ class ChecklistController {
 
     async deleteTask(req, res, next) {
         try {
-            const task = await checklistModel.findOne({_id: req.params.checkListId})
+            const task = await checklistModel.findOne({_id: req.taskId})
             const card = await cardsModel.findOne({_id: task.cardId})
             card.countTask = card.countTask - 1
-            const checklistAfterDelete = card.checkList.filter(item => item.toString() !== req.params.checkListId.toString())
+            const checklistAfterDelete = card.checkList.filter(item => item.toString() !== req.taskId.toString())
             card.checkList = checklistAfterDelete
-            await checklistModel.deleteOne({_id: req.params.checkListId})
+            const currentColumn = await columnsModel.findOne({_id: card.column_id})
+            const boardId = currentColumn.boardId.toString()
+            await checklistModel.deleteOne({_id: req.taskId})
             await card.save()
             console.log('задача удалена')
-            return res.json(card)
+            return  {card, boardId, taskId: req.taskId}
 
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 
     async updateTask(req, res, next) {
         try {
-            const task = await ChecklistService.updateTask(req.body, req.params.id)
-            const card = await cardsModel.findOne({_id: req.body.cardId})
-            if(!req.body.task){
-            if(req.body.done === true){
+            const task = await ChecklistService.updateTask(req, req._id)
+            const card = await cardsModel.findOne({_id: req.cardId})
+            const currentColumn = await columnsModel.findOne({_id: card.column_id})
+            const boardId = currentColumn.boardId.toString()
+            if(!req.task){
+            if(req.done === true){
                 card.doneTask =  card.doneTask +1
             } else card.doneTask =  card.doneTask -1}
             await card.save()
             const data = {
                 task,
-                card
+                card,
+                boardId
             }
-            return res.json(data)
+            return data
         } catch (e) {
-            next(e);
+            console.log(e);
         }
     }
 

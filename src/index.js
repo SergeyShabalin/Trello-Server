@@ -18,6 +18,7 @@ const CardsController = require('../src/controllers/CardsController')
 const ColumnsController = require('../src/controllers/ColumnsController')
 const BoardsController = require('../src/controllers/BoardsController')
 const ChecklistController = require('../src/controllers/ChecklistController')
+const UserController = require('../src/controllers/UserController')
 
 
 const io = new Server(server, {
@@ -45,6 +46,24 @@ const start = async (eventName, listener) => {
     try {
 
         io.on('connection', function (socket) {
+
+            socket.on('JOIN_USER', (userId) => {
+                console.log({userId})
+                socket.join(userId)
+                console.log(`user ${socket.id} получил слушатель ${userId}`)
+            })
+            // socket.on('LEAVE_USER', (userId) => {
+            //     socket.leave(userId)
+            //     console.log(`user ${socket.id} удалил слушатель ${userId}`)
+            //     socket.disconnect()
+            // })
+            //TODO пофиксить notification 118 124 строки userController
+            socket.on('SHARE_BOARD', async (data) => {
+                const targetUser = await UserController.shareBoard(data)
+                const targetUserId = targetUser._id.toString()
+                console.log(targetUser.messages)
+                io.in(targetUserId).emit('BOARD_SHARED', targetUser.messages)
+            })
 
             socket.on('JOIN_BOARD', (BoardId) => {
                 socket.join(BoardId)
@@ -113,8 +132,19 @@ const start = async (eventName, listener) => {
                 const boardId = task.boardId.toString()
                 io.in(boardId).emit('TASK_ADDED', task)
             })
+            socket.on('TASK_CHANGE', async (data) => {
+                const task = await ChecklistController.updateTask(data)
+                io.in(task.boardId).emit('TASK_CHANGED', task)
+            })
+            socket.on('TASK_DELETE', async (data) => {
+                const task = await ChecklistController.deleteTask(data)
+                io.in(task.boardId).emit('TASK_DELETED', task)
+            })
 
-
+            socket.on('COLUMN_DROP', async (data) => {
+                const currentBoard = await ColumnsController.dragDropColumn(data)
+                io.in(currentBoard._id.toString()).emit('COLUMN_DROPPED', currentBoard.columns)
+            })
             console.log('A user connected', socket.id);
         });
 

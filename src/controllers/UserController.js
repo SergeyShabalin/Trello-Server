@@ -111,15 +111,17 @@ class UserController {
 
     async shareBoard(req, res, next) {
         try {
-            const currentUser = await UserModel.findOne({_id: req.body._id})
-            const targetUser = await UserModel.findOne({email: req.body.email})
+            const currentUser = await UserModel.findOne({_id: req._id})
+            const targetUser = await UserModel.findOne({email: req.email})
             if (!targetUser) {
-                return res.status(400).json({message: `Пользователя не существует`})
+                 // return res.status(400).json({message: `Пользователя не существует`})
+                console.log('Пользователя не существует')
             } else {
-                const currentBoard = await BoardModel.findOne({_id: req.body.boardId})
-                const a = targetUser.boardIds.filter(id => id.toString() === req.body.boardId)
+                const currentBoard = await BoardModel.findOne({_id: req.boardId})
+                const a = targetUser.boardIds.filter(id => id.toString() === req.boardId)
                 if (a.length > 0) {
-                    return res.status(400).json({message: `У пользователя уже есть доступ к этой доске`})
+                    console.log('У пользователя уже есть доступ к этой доске')
+                    // return res.status(400).json({message: `У пользователя уже есть доступ к этой доске`})
                 } else {
                     if (currentUser.email === targetUser.email) return res.status(400).json({message: `Вы не можете отправить приглашение самому себе`})
                     const text = `Вам пришло приглашение от пользователя "${currentUser.email}" на просмотр и редактирование доски  "${currentBoard.title}"  Принять?`
@@ -129,12 +131,13 @@ class UserController {
                     }
                     targetUser.messages.push(message)
                     targetUser.save()
-                    const targetUserNew = await UserModel.findOne({email: req.body.email})
-                    return res.json(targetUserNew.email)
+                    // console.log({targetUser})
+                    // const targetUserNew = await UserModel.findOne({email: req.email})
+                    return targetUser
                 }
             }
         } catch (e) {
-            next(e)
+            console.log(e)
         }
     }
 

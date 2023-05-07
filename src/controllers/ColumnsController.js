@@ -26,7 +26,7 @@ class ColumnsController {
         if (req.title === '') {
             body.title = 'Новая колонка'
         }
-         try {
+        try {
             const columnNew = new columnsModel(body)
             await columnNew.save()
             const currentBoard = await boardsModel.findOne({_id: req.boardId})
@@ -34,7 +34,7 @@ class ColumnsController {
             await currentBoard.save()
             return columnNew
         } catch (e) {
-             console.log(e)
+            console.log(e)
         }
     }
 
@@ -52,7 +52,7 @@ class ColumnsController {
             const isDelete = await columnsModel.remove({_id: columnId})
             await currentBoard.save()
 
-            if (isDelete && isDeleteCardsInColumn) return(currentBoard)
+            if (isDelete && isDeleteCardsInColumn) return (currentBoard)
             else console.log('the error deleted')
         } catch (e) {
             console.log(e)
@@ -96,6 +96,24 @@ class ColumnsController {
             return res.json(refreshColumn)
         } catch (e) {
             next(e);
+        }
+    }
+
+    async dragDropColumn(data) {
+        try {
+            const currentColumn = await columnsModel.findOne({_id: data.currentColumnId})
+            const currentBoard = await boardsModel.findOne({_id: currentColumn.boardId})
+            const allColumns = currentBoard.columns
+            const currentColumnIndex = allColumns.indexOf(data.currentColumnId)
+            const targetColumnIndex = allColumns.indexOf(data.targetColumnId)
+
+            allColumns.splice(currentColumnIndex, 1)
+            allColumns.splice(targetColumnIndex + 1, 0, data.currentColumnId)
+            currentBoard.columns = allColumns
+            currentBoard.save()
+            return currentBoard
+        } catch (e) {
+            console.log(e)
         }
     }
 
