@@ -39,6 +39,7 @@ class UserController {
                 firstName: newUser.firstName,
                 secondName: newUser.secondName,
                 lastName: newUser.lastName,
+                avatar: newUser.avatar,
                 token: token
             }
             return res.json(currentUser)
@@ -71,6 +72,7 @@ class UserController {
                 lastName: currentUser.lastName,
                 messages: currentUser.messages,
                 isAuth: true,
+                avatar: currentUser.avatar,
                 token
             }
             return res.json(newUser)
@@ -100,7 +102,8 @@ class UserController {
                     firstName: currentUser.firstName,
                     secondName: currentUser.secondName,
                     lastName: currentUser.lastName,
-                    isAuth: true
+                    isAuth: true,
+                    avatar: currentUser.avatar
                 }
                 return res.json(user)
             }
@@ -114,14 +117,12 @@ class UserController {
             const currentUser = await UserModel.findOne({_id: req._id})
             const targetUser = await UserModel.findOne({email: req.email})
             if (!targetUser) {
-                 // return res.status(400).json({message: `Пользователя не существует`})
-                console.log('Пользователя не существует')
+                  return {message: `Пользователя не существует`}
             } else {
                 const currentBoard = await BoardModel.findOne({_id: req.boardId})
                 const a = targetUser.boardIds.filter(id => id.toString() === req.boardId)
                 if (a.length > 0) {
-                    console.log('У пользователя уже есть доступ к этой доске')
-                    // return res.status(400).json({message: `У пользователя уже есть доступ к этой доске`})
+                    return {message: `У пользователя уже есть доступ к этой доске`}
                 } else {
                     if (currentUser.email === targetUser.email) return res.status(400).json({message: `Вы не можете отправить приглашение самому себе`})
                     const text = `Вам пришло приглашение от пользователя "${currentUser.email}" на просмотр и редактирование доски  "${currentBoard.title}"  Принять?`
@@ -131,8 +132,6 @@ class UserController {
                     }
                     targetUser.messages.push(message)
                     targetUser.save()
-                    // console.log({targetUser})
-                    // const targetUserNew = await UserModel.findOne({email: req.email})
                     return targetUser
                 }
             }
@@ -180,7 +179,8 @@ class UserController {
                     _id: user._id,
                     email: user.email,
                     firstName: user.firstName,
-                    secondName: user.secondName
+                    secondName: user.secondName,
+                    avatar: user.avatar
                 }
                 return userInfo
             })
@@ -207,6 +207,22 @@ class UserController {
         }
     }
 
+    async updateUser(req, res, next){
+        try{
+            await UserModel.updateOne({_id: req.body._id}, {
+                avatar: req.body.avatar,
+                secondName: req.body.secondName,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+            })
+            console.log('успешно обновлено')
+            const updatedUser = await UserModel.findOne({_id: req.body._id})
+            return res.json(updatedUser)
+        } catch (e){
+            next(e)
+        }
+    }
 
 }
 

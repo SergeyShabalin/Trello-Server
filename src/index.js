@@ -60,9 +60,14 @@ const start = async (eventName, listener) => {
             //TODO пофиксить notification 118 124 строки userController
             socket.on('SHARE_BOARD', async (data) => {
                 const targetUser = await UserController.shareBoard(data)
-                const targetUserId = targetUser._id.toString()
-                console.log(targetUser.messages)
-                io.in(targetUserId).emit('BOARD_SHARED', targetUser.messages)
+                if(targetUser.message){
+                    socket.emit('BOARD_SHARED', {error: targetUser.message})
+                }
+                else{
+                    const targetUserId = targetUser._id.toString()
+                    io.in(targetUserId).emit('BOARD_SHARED', targetUser.messages)
+                }
+
             })
 
             socket.on('JOIN_BOARD', (BoardId) => {

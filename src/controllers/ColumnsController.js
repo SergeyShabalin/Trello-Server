@@ -106,9 +106,8 @@ class ColumnsController {
             const allColumns = currentBoard.columns
             const currentColumnIndex = allColumns.indexOf(data.currentColumnId)
             const targetColumnIndex = allColumns.indexOf(data.targetColumnId)
-
             allColumns.splice(currentColumnIndex, 1)
-            allColumns.splice(targetColumnIndex + 1, 0, data.currentColumnId)
+            allColumns.splice(targetColumnIndex, 0, data.currentColumnId)
             currentBoard.columns = allColumns
             currentBoard.save()
             return currentBoard

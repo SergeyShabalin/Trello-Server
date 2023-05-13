@@ -12,5 +12,6 @@ UserRouter.post('/applyInvite',UserController.applyInvite )
 UserRouter.patch('/deleteMessage',UserController.deleteMessage )
 UserRouter.post('/oneBoard',UserController.getUsersOneBoard )
 UserRouter.patch('/deleteBoard',UserController.deleteBoard )
+UserRouter.patch('/changeUser',UserController.updateUser )
 
 module.exports = UserRouter
