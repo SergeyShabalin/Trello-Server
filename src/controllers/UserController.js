@@ -117,14 +117,14 @@ class UserController {
             const currentUser = await UserModel.findOne({_id: req._id})
             const targetUser = await UserModel.findOne({email: req.email})
             if (!targetUser) {
-                  return {message: `Пользователя не существует`}
+                  return {errors: `Пользователя не существует`}
             } else {
                 const currentBoard = await BoardModel.findOne({_id: req.boardId})
                 const a = targetUser.boardIds.filter(id => id.toString() === req.boardId)
                 if (a.length > 0) {
-                    return {message: `У пользователя уже есть доступ к этой доске`}
+                    return {errors: `У пользователя уже есть доступ к этой доске`}
                 } else {
-                    if (currentUser.email === targetUser.email) return res.status(400).json({message: `Вы не можете отправить приглашение самому себе`})
+                    if (currentUser.email === targetUser.email) return {errors: `Вы не можете отправить приглашение самому себе`}
                     const text = `Вам пришло приглашение от пользователя "${currentUser.email}" на просмотр и редактирование доски  "${currentBoard.title}"  Принять?`
                     const message = {
                         message: text,
