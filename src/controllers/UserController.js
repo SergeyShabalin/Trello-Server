@@ -246,9 +246,28 @@ class UserController {
             next(e)
         }
     }
-    async downloadBackground(req, res, next){
+    async downloadBackground(data, res){
+        try{
+            await UserModel.updateOne({_id: data.userId}, {
+                background: data.background,
+            })
 
+            const updatedUser = await UserModel.findOne({_id: data.userId})
+          return   updatedUser.background
 
+        }catch (e){
+            console.log(e)
+        }
+    }
+
+    async getBackground(req, res, next){
+        console.log(req.body)
+        try{
+            const updatedUser = await UserModel.findOne({_id: req.body._id})
+            return res.json(updatedUser)
+        }catch (e){
+            next(e)
+        }
     }
 
     async updatePasswordUser(req, res, next){

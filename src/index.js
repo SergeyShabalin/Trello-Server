@@ -1,92 +1,86 @@
-require('dotenv').config()
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-
-const app = express()
-const http = require("http")
-const {Server} = require("socket.io");
-const server = http.createServer(app)
-
-
-const router = require('./routes/index')
-const ColumnsRouter = require('./routes/columns')
-const CardsRouter = require('./routes/cards')
-const BoardRouter = require('./routes/boards')
-const UserRouter = require('./routes/users')
-const ChecklistRouter = require('./routes/checklist')
-const CardsController = require('../src/controllers/CardsController')
-const ColumnsController = require('../src/controllers/ColumnsController')
-const BoardsController = require('../src/controllers/BoardsController')
-const ChecklistController = require('../src/controllers/ChecklistController')
-const UserController = require('../src/controllers/UserController')
+const app = express();
+const http = require("http");
+const { Server } = require("socket.io");
+const server = http.createServer(app);
+const router = require('./routes/index');
+const ColumnsRouter = require('./routes/columns');
+const CardsRouter = require('./routes/cards');
+const BoardRouter = require('./routes/boards');
+const UserRouter = require('./routes/users');
+const ChecklistRouter = require('./routes/checklist');
+const CardsController = require('../src/controllers/CardsController');
+const ColumnsController = require('../src/controllers/ColumnsController');
+const BoardsController = require('../src/controllers/BoardsController');
+const ChecklistController = require('../src/controllers/ChecklistController');
+const UserController = require('../src/controllers/UserController');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
-const path = require('path')
-
-const fileUpload = require('express-fileupload')
+const path = require('path');
 
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'src/images')
+        cb(null, 'src/images');
     },
     filename: (req, file, cb) => {
-        cb(null, path.extname(file.originalname) + '-' + Date.now())
-    }
-})
+        cb(null, path.extname(file.originalname) + '-' + Date.now());
+    },
+});
 
-const upload = multer({storage: storage})
+const upload = multer({ storage: storage });
 
 cloudinary.config({
     cloud_name: 'dwkxptye4',
     api_key: '246311834185549',
-    api_secret: 'aU1Xs0e6hPwtAcLPLZkad5HLyM0'
+    api_secret: 'aU1Xs0e6hPwtAcLPLZkad5HLyM0',
 });
 
-app.post('/user/sendIMG', upload.single('background'), (req, res) => {
-    const file = req.file;
-    console.log(file)
-
-    cloudinary.uploader.upload(file.path, {public_id: file.originalname}, (error, result) => {
-
-        if (error) {
-            return res.status(400).json({error: 'Ошибка загрузки файла'});
-        }
-
-        const imageUrl = result.secure_url;
-        console.log(imageUrl)
-
-        // res.status(200).json({imageUrl});
-    }).then((data) => {
-        // console.log(data);
-        // console.log(data.secure_url);
-    }).catch((err) => {
-        console.log(err);
-    });
-})
-
-
-const io = new Server(server, {
-    cors: {
-        credentials: true,
-        methods: ['GET', 'POST'],
-        origin: process.env.CLIENT_URL
-    }
-})
-
-const PORT = process.env.PORT || 4000;
-
 app.use(express.json());
-app.use(cors());
-app.use(fileUpload({}))
-
+app.use(cors()); // Подключение промежуточного ПО cors() перед определением маршрутов
+app.use(upload.single('background'));
 app.use('/api', router);
 app.use('/columns', ColumnsRouter);
 app.use('/cards', CardsRouter);
 app.use('/boards', BoardRouter);
 app.use('/checklist', ChecklistRouter);
 app.use('/user', UserRouter);
+
+app.post('/user/sendIMG', (req, res) => {
+    const file = req.file;
+    console.log(file)
+
+    cloudinary.uploader.upload(file.path, {public_id: file.originalname}, (error, result) => {
+        if (error) {
+            return res.status(400).json({error: 'Ошибка загрузки файла'});
+        }
+        let imageUrl = result.secure_url;
+        const payload = {
+            userId: file.originalname,
+            background: imageUrl
+        }
+        const updatedUser = UserController.downloadBackground(payload)
+        console.log(imageUrl)
+      return res.json({imageUrl})
+    })
+
+
+})
+
+
+
+const io = new Server(server, {
+    cors: {
+        credentials: true,
+        methods: ['GET', 'POST'],
+        origin: process.env.CLIENT_URL || 'https://cloudinary.com'
+    }
+})
+
+const PORT = process.env.PORT || 4000;
 
 
 const start = async (eventName, listener) => {
@@ -211,3 +205,13 @@ const start = async (eventName, listener) => {
     }
 }
 start()
+
+
+//TODO
+// const payload = {
+//             userId: data.public_id,
+//             background: data.url
+//         }
+//
+//         const updatedUser =  UserController.downloadBackground(payload)
+//         return res.json(updatedUser)
