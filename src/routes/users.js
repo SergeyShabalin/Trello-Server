@@ -3,6 +3,7 @@ const UserController = require('../controllers/UserController')
 const UserRouter = new Router();
 const authMiddleware = require('../middleware/authMiddleware')
 
+
 UserRouter.post('/registration',UserController.registration )
 UserRouter.post('/login',UserController.login )
 UserRouter.get('/checkLogin', authMiddleware, UserController.checkLogin )
@@ -13,5 +14,8 @@ UserRouter.patch('/deleteMessage',UserController.deleteMessage )
 UserRouter.post('/oneBoard',UserController.getUsersOneBoard )
 UserRouter.patch('/deleteBoard',UserController.deleteBoard )
 UserRouter.patch('/changeUser',UserController.updateUser )
+// UserRouter.post('/sendIMG',UserController.downloadBackground )
+
+
 
 module.exports = UserRouter

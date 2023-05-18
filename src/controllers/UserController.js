@@ -7,6 +7,8 @@ const ColumnsModel = require("../models/columns-model");
 const cardsModel = require("../models/cards-model");
 
 
+
+
 const generateAccessToken = (id, email) => {
     const payload = {
         id,
@@ -40,6 +42,11 @@ class UserController {
                 secondName: newUser.secondName,
                 lastName: newUser.lastName,
                 avatar: newUser.avatar,
+                background: newUser.background,
+                position: newUser.position,
+                department: newUser.department,
+                organization: newUser.organization,
+                birthDate: newUser.birthDate,
                 token: token
             }
             return res.json(currentUser)
@@ -73,6 +80,11 @@ class UserController {
                 messages: currentUser.messages,
                 isAuth: true,
                 avatar: currentUser.avatar,
+                background: currentUser.background,
+                position: currentUser.position,
+                department: currentUser.department,
+                organization: currentUser.organization,
+                birthDate: currentUser.birthDate,
                 token
             }
             return res.json(newUser)
@@ -103,7 +115,12 @@ class UserController {
                     secondName: currentUser.secondName,
                     lastName: currentUser.lastName,
                     isAuth: true,
-                    avatar: currentUser.avatar
+                    avatar: currentUser.avatar,
+                    background: currentUser.background,
+                    position: currentUser.position,
+                    department: currentUser.department,
+                    organization: currentUser.organization,
+                    birthDate: currentUser.birthDate,
                 }
                 return res.json(user)
             }
@@ -132,6 +149,7 @@ class UserController {
                     }
                     targetUser.messages.push(message)
                     targetUser.save()
+                    console.log(targetUser)
                     return targetUser
                 }
             }
@@ -214,11 +232,28 @@ class UserController {
                 secondName: req.body.secondName,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
-                email: req.body.email,
+                background: req.body.background,
+                position: req.body.position,
+                department: req.body.department,
+                organization: req.body.organization,
+                birthDate: req.body.birthDate,
             })
             console.log('успешно обновлено')
             const updatedUser = await UserModel.findOne({_id: req.body._id})
+
             return res.json(updatedUser)
+        } catch (e){
+            next(e)
+        }
+    }
+    async downloadBackground(req, res, next){
+
+
+    }
+
+    async updatePasswordUser(req, res, next){
+        try{
+
         } catch (e){
             next(e)
         }

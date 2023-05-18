@@ -10,6 +10,11 @@ const UserSchema = new Schema({
     token: {type: String, unique: false, required: false},
     messages: [{type: Object, unique: false, required: false}],
     avatar: {type: String, unique: false, required: false},
+    background: {type: Object, unique: false, required: false},
+    position: {type: String, unique: false, required: false},
+    department: {type: String, unique: false, required: false},
+    organization: {type: String, unique: false, required: false},
+    birthDate: {type: Date, unique: false, required: false},
 })
 
 module.exports = model('User', UserSchema);
