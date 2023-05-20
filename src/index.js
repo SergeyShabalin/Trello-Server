@@ -62,9 +62,12 @@ app.post('/user/sendIMG', (req, res) => {
             userId: file.originalname,
             background: imageUrl
         }
-        const updatedUser = UserController.downloadBackground(payload)
+       if(imageUrl){
+           UserController.downloadBackground(payload)
+       }
         console.log(imageUrl)
-      return res.json({imageUrl})
+
+        return res.json({background:imageUrl, _id: file.originalname })
     })
 
 

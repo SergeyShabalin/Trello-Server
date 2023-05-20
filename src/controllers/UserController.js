@@ -253,7 +253,11 @@ class UserController {
             })
 
             const updatedUser = await UserModel.findOne({_id: data.userId})
-          return   updatedUser.background
+            const updatedData = {
+                _id: updatedUser._id,
+                background: updatedUser.background
+            }
+            return updatedData
 
         }catch (e){
             console.log(e)
@@ -264,6 +268,7 @@ class UserController {
         console.log(req.body)
         try{
             const updatedUser = await UserModel.findOne({_id: req.body._id})
+
             return res.json(updatedUser)
         }catch (e){
             next(e)
