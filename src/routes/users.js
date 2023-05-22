@@ -14,7 +14,7 @@ UserRouter.patch('/deleteMessage',UserController.deleteMessage )
 UserRouter.post('/oneBoard',UserController.getUsersOneBoard )
 UserRouter.patch('/deleteBoard',UserController.deleteBoard )
 UserRouter.patch('/changeUser',UserController.updateUser )
- UserRouter.post('/sendIMG2',UserController.getBackground )
+ UserRouter.post('/changePersonalInfo',UserController.changePersonalInfo )
 
 
 

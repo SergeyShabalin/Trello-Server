@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
 const http = require("http");
-const { Server } = require("socket.io");
+const {Server} = require("socket.io");
 const server = http.createServer(app);
 const router = require('./routes/index');
 const ColumnsRouter = require('./routes/columns');
@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({storage: storage});
 
 cloudinary.config({
     cloud_name: 'dwkxptye4',
@@ -62,17 +62,14 @@ app.post('/user/sendIMG', (req, res) => {
             userId: file.originalname,
             background: imageUrl
         }
-       if(imageUrl){
-           UserController.downloadBackground(payload)
-       }
-        console.log(imageUrl)
-
-        return res.json({background:imageUrl, _id: file.originalname })
+        if (imageUrl) {
+            UserController.downloadBackground(payload)
+        }
+        return res.json({background: imageUrl, _id: file.originalname})
     })
 
 
 })
-
 
 
 const io = new Server(server, {

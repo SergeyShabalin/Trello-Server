@@ -264,24 +264,29 @@ class UserController {
         }
     }
 
-    async getBackground(req, res, next){
-        console.log(req.body)
+    async changePersonalInfo(req, res, next){
+         const {oldPass, newPass, _id, email} = req.body
         try{
-            const updatedUser = await UserModel.findOne({_id: req.body._id})
+             if( oldPass && newPass) {
+                 const user = await UserModel.findOne({_id: _id})
+                 const validPassword = bcrypt.compareSync(oldPass, user.password)
+                 if (!validPassword) {
+                     return res.status(400).json({message: `Старый пароль неверный`})
+                 } else {
+                     const token = generateAccessToken(user._id, user.email)
+                     const hashPassword = bcrypt.hashSync(newPass, 7);
 
-            return res.json(updatedUser)
+                     await UserModel.update({_id: _id}, {token, password: hashPassword})
+                     return res.json({token})
+                 }
+             } else console.log('смена email')
+
         }catch (e){
             next(e)
         }
     }
 
-    async updatePasswordUser(req, res, next){
-        try{
 
-        } catch (e){
-            next(e)
-        }
-    }
 
 }
 
