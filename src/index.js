@@ -191,6 +191,14 @@ const start = async (eventName, listener) => {
                 const currentBoard = await ColumnsController.dragDropColumn(data)
                 io.in(currentBoard._id.toString()).emit('COLUMN_DROPPED', currentBoard.columns)
             })
+
+            socket.on('GET_MEMBERS', async (data) => {
+                console.log(data)
+                const members = await CardsController.getMembersOneCard(data)
+                console.log(members)
+                io.in(members.boardId.toString()).emit('RECEIVED_MEMBERS', members.users)
+            })
+
             console.log('A user connected', socket.id);
         });
 
@@ -207,11 +215,3 @@ const start = async (eventName, listener) => {
 start()
 
 
-//TODO
-// const payload = {
-//             userId: data.public_id,
-//             background: data.url
-//         }
-//
-//         const updatedUser =  UserController.downloadBackground(payload)
-//         return res.json(updatedUser)

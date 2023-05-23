@@ -7,8 +7,6 @@ const ColumnsModel = require("../models/columns-model");
 const cardsModel = require("../models/cards-model");
 
 
-
-
 const generateAccessToken = (id, email) => {
     const payload = {
         id,
@@ -134,7 +132,7 @@ class UserController {
             const currentUser = await UserModel.findOne({_id: req._id})
             const targetUser = await UserModel.findOne({email: req.email})
             if (!targetUser) {
-                  return {errors: `Пользователя не существует`}
+                return {errors: `Пользователя не существует`}
             } else {
                 const currentBoard = await BoardModel.findOne({_id: req.boardId})
                 const a = targetUser.boardIds.filter(id => id.toString() === req.boardId)
@@ -225,8 +223,8 @@ class UserController {
         }
     }
 
-    async updateUser(req, res, next){
-        try{
+    async updateUser(req, res, next) {
+        try {
             await UserModel.updateOne({_id: req.body._id}, {
                 avatar: req.body.avatar,
                 secondName: req.body.secondName,
@@ -242,12 +240,13 @@ class UserController {
             const updatedUser = await UserModel.findOne({_id: req.body._id})
 
             return res.json(updatedUser)
-        } catch (e){
+        } catch (e) {
             next(e)
         }
     }
-    async downloadBackground(data, res){
-        try{
+
+    async downloadBackground(data, res) {
+        try {
             await UserModel.updateOne({_id: data.userId}, {
                 background: data.background,
             })
@@ -259,33 +258,39 @@ class UserController {
             }
             return updatedData
 
-        }catch (e){
+        } catch (e) {
             console.log(e)
         }
     }
 
-    async changePersonalInfo(req, res, next){
-         const {oldPass, newPass, _id, email} = req.body
-        try{
-             if( oldPass && newPass) {
-                 const user = await UserModel.findOne({_id: _id})
-                 const validPassword = bcrypt.compareSync(oldPass, user.password)
-                 if (!validPassword) {
-                     return res.status(400).json({message: `Старый пароль неверный`})
-                 } else {
-                     const token = generateAccessToken(user._id, user.email)
-                     const hashPassword = bcrypt.hashSync(newPass, 7);
+    async changePersonalInfo(req, res, next) {
+        const {oldPass, newPass, _id, email} = req.body
+        try {
+            if (oldPass && newPass) {
+                const user = await UserModel.findOne({_id: _id})
+                const validPassword = bcrypt.compareSync(oldPass, user.password)
+                if (!validPassword) {
+                    return res.status(400).json({message: `Старый пароль неверный`})
+                } else {
+                    const token = generateAccessToken(user._id, user.email)
+                    const hashPassword = bcrypt.hashSync(newPass, 7);
 
-                     await UserModel.update({_id: _id}, {token, password: hashPassword})
-                     return res.json({token})
-                 }
-             } else console.log('смена email')
+                    await UserModel.update({_id: _id}, {token, password: hashPassword})
+                    console.log('пароль изменен')
+                    return res.json({token})
+                }
+            } else {
+                const user = await UserModel.findOne({_id: _id})
+                const token = generateAccessToken(user._id, user.email)
+                await UserModel.update({_id: _id}, {token, email})
+                console.log('email изменен')
+                return res.json({token, email})
+            }
 
-        }catch (e){
+        } catch (e) {
             next(e)
         }
     }
-
 
 
 }

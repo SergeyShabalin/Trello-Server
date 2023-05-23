@@ -8,7 +8,8 @@ const CardsSchema = new Schema({
     countTask: {type: Number, unique: false, required: false},
     doneTask: {type: Number, unique: false, required: false},
     order: {type: Number, unique: false, required: false},
-    checkList: [{type: Schema.Types.ObjectId, ref: 'Checklist', unique: false}]
+    checkList: [{type: Schema.Types.ObjectId, ref: 'Checklist', unique: false}],
+    members: [{type: Schema.Types.ObjectId, ref: 'User', unique: false}]
 })
 
 module.exports = model('allCards', CardsSchema);
