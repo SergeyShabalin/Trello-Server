@@ -70,6 +70,26 @@ app.post('/user/sendIMG', (req, res) => {
 
 
 })
+app.post('/user/sendAvatar', (req, res) => {
+    const file = req.file;
+    console.log(file)
+
+    cloudinary.uploader.upload(file.path, {public_id: file.originalname+'avatar'}, (error, result) => {
+        if (error) {
+            return res.status(400).json({error: 'Ошибка загрузки файла'});
+        }
+        let imageUrl = result.secure_url;
+        const payload = {
+            userId: file.originalname,
+            avatar: imageUrl
+        }
+        if (imageUrl) {
+            UserController.downloadAvatar(payload)
+        }
+        return res.json({avatar: imageUrl, _id: file.originalname})
+    })
+
+})
 
 
 const io = new Server(server, {
@@ -198,13 +218,11 @@ const start = async (eventName, listener) => {
             })
 
             socket.on('ADD_MEMBER_ONE_CARD', async (data) => {
-                console.log(data)
                  const members = await CardsController.addMembersOneCard(data)
-                 console.log(members)
                  io.in(members.boardId.toString()).emit('CHANGE_COUNT_MEMBERS', members.users)
             })
 
-
+//TODO сделать загрузку аватарок через клоудинари, иначе долго грузит каждый раз картинки
 
             console.log('A user connected', socket.id);
         });

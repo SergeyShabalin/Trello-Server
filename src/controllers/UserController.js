@@ -263,6 +263,20 @@ class UserController {
         }
     }
 
+    async downloadAvatar(data){
+        await UserModel.updateOne({_id: data.userId}, {
+            avatar: data.avatar,
+        })
+
+        const updatedUser = await UserModel.findOne({_id: data.userId})
+        const updatedData = {
+            _id: updatedUser._id,
+            avatar: updatedUser.avatar
+        }
+        return updatedData
+
+    }
+
     async changePersonalInfo(req, res, next) {
         const {oldPass, newPass, _id, email} = req.body
         try {
