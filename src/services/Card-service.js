@@ -10,7 +10,7 @@ class CardService {
         const cards = await cardsModel.find({})
         const order = cards.map(item => item.order)
         const maxOrder = (order.length < 1 ? 1 : order.reduce((a, b) => a > b ? a : b) + 1);
-        const body = {...data, title: data.title, order: maxOrder, doneTask: 0, countTask: 0, decisionDate: null}
+        const body = {...data, title: data.title, order: maxOrder, doneTask: 0, countTask: 0, decisionDate: null, memberIds: []}
         if (data.title === '') {
             body.title = 'Новая карточка'
         }

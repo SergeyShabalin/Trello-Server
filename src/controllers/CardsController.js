@@ -18,8 +18,8 @@ class CardsController {
 
     async deleteCard(cardId) {
         try {
-           const boardId = await CardService.delete(cardId)
-              return boardId
+            const boardId = await CardService.delete(cardId)
+            return boardId
         } catch (e) {
             console.log(e);
         }
@@ -30,7 +30,7 @@ class CardsController {
 
             if (data.title === '') data.title = 'Новая карточка'
             const changedCard = await CardService.update(data, data._id)
-            return  changedCard
+            return changedCard
         } catch (e) {
             console.log(e);
         }
@@ -55,11 +55,10 @@ class CardsController {
         }
     }
 
-    async getMembersOneCard(data){
-        try{
-            const currentCard = await cardsModel.findOne({ _id: data.cardId });
-            const currentColumn = await columnModel.findOne({ _id: currentCard.column_id.toString() });
-            console.log(currentColumn.boardId);
+    async getMembersOneCard(data) {
+        try {
+            const currentCard = await cardsModel.findOne({_id: data.cardId});
+            const currentColumn = await columnModel.findOne({_id: currentCard.column_id.toString()});
             const userList = await userModel.find({});
             const userMap = {};
 
@@ -75,18 +74,67 @@ class CardsController {
                 };
             }
 
-
             const resultArray = [];
 
-            for (let i = 0; i < currentCard.members.length; i++) {
-                const memberId = currentCard.members[i].toString();
+            for (let i = 0; i < currentCard.memberIds.length; i++) {
+                const memberId = currentCard.memberIds[i].toString();
                 if (userMap.hasOwnProperty(memberId)) {
                     resultArray.push(userMap[memberId]);
                 }
             }
 
-           return({users: resultArray, boardId: currentColumn.boardId})
-        } catch (e){
+            return ({users: resultArray, boardId: currentColumn.boardId})
+        } catch (e) {
+
+        }
+    }
+
+    async addMembersOneCard(data) {
+        try {
+            const currentCard = await cardsModel.findOne({_id: data.cardId});
+            const currentColumn = await columnModel.findOne({_id: currentCard.column_id.toString()});
+            const userList = await userModel.find({});
+            const userMap = {};
+
+            function updateUserList() {
+                const resultArray = [];
+                for (let i = 0; i < userList.length; i++) {
+                    const user = userList[i];
+                    userMap[user._id.toString()] = {
+                        _id: user._id,
+                        email: user.email,
+                        firstName: user.firstName,
+                        secondName: user.secondName,
+                        lastName: user.lastName,
+                        avatar: user.avatar,
+                    };
+                }
+
+                for (let i = 0; i < currentCard.memberIds.length; i++) {
+                    const memberId = currentCard.memberIds[i].toString();
+                    if (userMap.hasOwnProperty(memberId)) {
+                        resultArray.push(userMap[memberId]);
+                    }
+                }
+                return resultArray
+            }
+
+            const isMemberPresent = currentCard.memberIds.includes(data.userId);
+            if (!isMemberPresent) {
+                currentCard.memberIds.push(data.userId)
+                currentCard.save()
+                const members = updateUserList()
+                return ({users:members,boardId: currentColumn.boardId })
+            }
+            else{
+                const changedArray =  currentCard.memberIds.filter((id) => id.toString() !== data.userId.toString())
+                currentCard.memberIds = changedArray
+                currentCard.save()
+                const members = updateUserList()
+                return ({users:members,boardId: currentColumn.boardId })
+            }
+
+        } catch (e) {
 
         }
     }

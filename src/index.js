@@ -193,11 +193,18 @@ const start = async (eventName, listener) => {
             })
 
             socket.on('GET_MEMBERS', async (data) => {
-                console.log(data)
                 const members = await CardsController.getMembersOneCard(data)
-                console.log(members)
                 io.in(members.boardId.toString()).emit('RECEIVED_MEMBERS', members.users)
             })
+
+            socket.on('ADD_MEMBER_ONE_CARD', async (data) => {
+                console.log(data)
+                 const members = await CardsController.addMembersOneCard(data)
+                 console.log(members)
+                 io.in(members.boardId.toString()).emit('CHANGE_COUNT_MEMBERS', members.users)
+            })
+
+
 
             console.log('A user connected', socket.id);
         });
