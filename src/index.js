@@ -212,11 +212,6 @@ const start = async (eventName, listener) => {
                 io.in(currentBoard._id.toString()).emit('COLUMN_DROPPED', currentBoard.columns)
             })
 
-            socket.on('GET_MEMBERS', async (data) => {
-                const members = await CardsController.getMembersOneCard(data)
-                io.in(members.boardId.toString()).emit('RECEIVED_MEMBERS', members.users)
-            })
-
             socket.on('ADD_MEMBER_ONE_CARD', async (data) => {
                  const members = await CardsController.addMembersOneCard(data)
                  io.in(members.boardId.toString()).emit('CHANGE_COUNT_MEMBERS', members.users)

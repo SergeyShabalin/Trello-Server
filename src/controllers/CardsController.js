@@ -50,16 +50,9 @@ class CardsController {
     async getCardInfo(req, res, next) {
         try {
             const cardData = await cardsModel.findOne({_id: req.params.id}).populate('checkList')
-            return res.json(cardData)
-        } catch (e) {
-            next(e);
-        }
-    }
+            console.log(cardData.memberIds)
 
-    async getMembersOneCard(data) {
-        try {
-            const currentCard = await cardsModel.findOne({_id: data.cardId});
-            const currentColumn = await columnModel.findOne({_id: currentCard.column_id.toString()});
+
             const userList = await userModel.find({});
             const userMap = {};
 
@@ -76,17 +69,16 @@ class CardsController {
             }
 
             const resultArray = [];
-
-            for (let i = 0; i < currentCard.memberIds.length; i++) {
-                const memberId = currentCard.memberIds[i].toString();
+            for (let i = 0; i < cardData.memberIds.length; i++) {
+                const memberId = cardData.memberIds[i].toString();
                 if (userMap.hasOwnProperty(memberId)) {
                     resultArray.push(userMap[memberId]);
                 }
             }
 
-            return ({users: resultArray, boardId: currentColumn.boardId})
+            return res.json({cardInfo:cardData, usersOneCard:resultArray})
         } catch (e) {
-
+            next(e);
         }
     }
 
@@ -125,14 +117,13 @@ class CardsController {
                 currentCard.memberIds.push(data.userId)
                 currentCard.save()
                 const members = updateUserList()
-                return ({users:members,boardId: currentColumn.boardId })
-            }
-            else{
-                const changedArray =  currentCard.memberIds.filter((id) => id.toString() !== data.userId.toString())
+                return ({users: members, boardId: currentColumn.boardId})
+            } else {
+                const changedArray = currentCard.memberIds.filter((id) => id.toString() !== data.userId.toString())
                 currentCard.memberIds = changedArray
                 currentCard.save()
                 const members = updateUserList()
-                return ({users:members,boardId: currentColumn.boardId })
+                return ({users: members, boardId: currentColumn.boardId})
             }
 
         } catch (e) {
