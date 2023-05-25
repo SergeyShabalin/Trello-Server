@@ -23,7 +23,6 @@ class ChecklistController {
             card.countTask = card.countTask + 1
             card.checkList.push(checkListNew._id)
             const currentColumn = await columnsModel.findOne({_id: card.column_id})
-
             await card.save()
             console.log('Задача добавлена')
             const data={

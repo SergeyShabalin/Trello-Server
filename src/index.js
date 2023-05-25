@@ -53,7 +53,7 @@ app.post('/user/sendIMG', (req, res) => {
     const file = req.file;
     console.log(file)
 
-    cloudinary.uploader.upload(file.path, {public_id: file.originalname}, (error, result) => {
+    cloudinary.uploader.upload(file.path, {public_id: file.originalname+'background'}, (error, result) => {
         if (error) {
             return res.status(400).json({error: 'Ошибка загрузки файла'});
         }
@@ -68,7 +68,7 @@ app.post('/user/sendIMG', (req, res) => {
         return res.json({background: imageUrl, _id: file.originalname})
     })
 
-
+//TODO чистить папку images
 })
 app.post('/user/sendAvatar', (req, res) => {
     const file = req.file;

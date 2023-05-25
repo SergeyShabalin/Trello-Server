@@ -263,7 +263,7 @@ class UserController {
         }
     }
 
-    async downloadAvatar(data){
+    async downloadAvatar(data) {
         await UserModel.updateOne({_id: data.userId}, {
             avatar: data.avatar,
         })
@@ -275,6 +275,28 @@ class UserController {
         }
         return updatedData
 
+    }
+
+    async getUserInfo(req, res, next) {
+        try {
+
+            const currentUser = await UserModel.findOne({_id: req.params.userId})
+            console.log('currentUser', currentUser)
+            // const user = {
+            //     avatar: currentUser.avatar,
+            //     secondName: currentUser.secondName,
+            //     firstName: currentUser.firstName,
+            //     lastName: currentUser.lastName,
+            //     background: currentUser.background,
+            //     position: currentUser.position,
+            //     department: currentUser.department,
+            //     organization: currentUser.organization,
+            //     birthDate: currentUser.birthDate,
+            // }
+            return res.json(currentUser)
+        } catch (e) {
+            next(e)
+        }
     }
 
     async changePersonalInfo(req, res, next) {
@@ -304,6 +326,8 @@ class UserController {
         } catch (e) {
             next(e)
         }
+
+
     }
 
 
