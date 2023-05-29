@@ -217,8 +217,6 @@ const start = async (eventName, listener) => {
                  io.in(members.boardId.toString()).emit('CHANGE_COUNT_MEMBERS', members.users)
             })
 
-//TODO сделать загрузку аватарок через клоудинари, иначе долго грузит каждый раз картинки
-
             console.log('A user connected', socket.id);
         });
 

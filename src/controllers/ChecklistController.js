@@ -25,12 +25,12 @@ class ChecklistController {
             const currentColumn = await columnsModel.findOne({_id: card.column_id})
             await card.save()
             console.log('Задача добавлена')
-            const data={
+            const data = {
                 task: checkListNew,
                 boardId: currentColumn.boardId,
                 card
             }
-            return  data
+            return data
         } catch (e) {
             console.log(e);
         }
@@ -49,7 +49,7 @@ class ChecklistController {
             await checklistModel.deleteOne({_id: req.taskId})
             await card.save()
             console.log('задача удалена')
-            return  {card, boardId, taskId: req.taskId}
+            return {card, boardId, taskId: req.taskId}
 
         } catch (e) {
             console.log(e);
@@ -62,10 +62,11 @@ class ChecklistController {
             const card = await cardsModel.findOne({_id: req.cardId})
             const currentColumn = await columnsModel.findOne({_id: card.column_id})
             const boardId = currentColumn.boardId.toString()
-            if(!req.task){
-            if(req.done === true){
-                card.doneTask =  card.doneTask +1
-            } else card.doneTask =  card.doneTask -1}
+            if (!req.task) {
+                if (req.done === true) {
+                    card.doneTask = card.doneTask + 1
+                } else card.doneTask = card.doneTask - 1
+            }
             await card.save()
             const data = {
                 task,
@@ -80,17 +81,20 @@ class ChecklistController {
 
     async updateTaskValue(req, res, next) {
         try {
-             const taskValue = await ChecklistService.updateValue(req.body, req.params.id)
-             const card = await cardsModel.findOne({_id: req.body.cardId})
-            if(req.body.done === true){
-                card.doneTask =  card.doneTask +1
-            } else card.doneTask =  card.doneTask -1
+            const taskValue = await ChecklistService.updateValue(req.body, req.params.id)
+            const card = await cardsModel.findOne({_id: req.body.cardId})
+            if (req.body.done === true) {
+                card.doneTask = card.doneTask + 1
+            } else card.doneTask = card.doneTask - 1
             await card.save()
-             return res.json(taskValue)
+            return res.json(taskValue)
         } catch (e) {
             next(e);
         }
     }
+
+
+
 
 }
 
