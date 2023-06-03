@@ -16,6 +16,7 @@ UserRouter.patch('/deleteBoard', UserController.deleteBoard)
 UserRouter.patch('/changeUser', UserController.updateUser)
 UserRouter.post('/changePersonalInfo', UserController.changePersonalInfo)
 UserRouter.get('/getUserInfo/:userId', UserController.getUserInfo)
+UserRouter.patch('/searchUser/:boardId', UserController.searchUser)
 
 
 module.exports = UserRouter

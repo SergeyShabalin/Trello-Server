@@ -50,9 +50,6 @@ class CardsController {
     async getCardInfo(req, res, next) {
         try {
             const cardData = await cardsModel.findOne({_id: req.params.id}).populate('checkList')
-            console.log(cardData.memberIds)
-
-
             const userList = await userModel.find({});
             const userMap = {};
 

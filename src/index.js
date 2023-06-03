@@ -51,7 +51,6 @@ app.use('/user', UserRouter);
 
 app.post('/user/sendIMG', (req, res) => {
     const file = req.file;
-    console.log(file)
 
     cloudinary.uploader.upload(file.path, {public_id: file.originalname+'background'}, (error, result) => {
         if (error) {
@@ -109,7 +108,6 @@ const start = async (eventName, listener) => {
         io.on('connection', function (socket) {
 
             socket.on('JOIN_USER', (userId) => {
-                console.log({userId})
                 socket.join(userId)
                 console.log(`user ${socket.id} получил слушатель ${userId}`)
             })
@@ -135,14 +133,12 @@ const start = async (eventName, listener) => {
                 socket.join(BoardId)
                 console.log(`user ${socket.id} подписался на доску ${BoardId}`)
                 const clients = socket.adapter.rooms.get(BoardId);
-                console.log('clients:', clients)
             })
 
             socket.on('LEAVE_BOARD', (BoardId) => {
                 socket.leave(BoardId)
                 console.log(`user ${socket.id} отписался от доски ${BoardId}`)
                 const clients = socket.adapter.rooms.get(BoardId);
-                console.log('clients:', clients)
                 socket.disconnect()
             })
 

@@ -279,21 +279,41 @@ class UserController {
 
     async getUserInfo(req, res, next) {
         try {
-
             const currentUser = await UserModel.findOne({_id: req.params.userId})
-            console.log('currentUser', currentUser)
-            // const user = {
-            //     avatar: currentUser.avatar,
-            //     secondName: currentUser.secondName,
-            //     firstName: currentUser.firstName,
-            //     lastName: currentUser.lastName,
-            //     background: currentUser.background,
-            //     position: currentUser.position,
-            //     department: currentUser.department,
-            //     organization: currentUser.organization,
-            //     birthDate: currentUser.birthDate,
-            // }
             return res.json(currentUser)
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async searchUser(req, res, next) {
+        try {
+            const currentBoard = await BoardModel.findOne({ _id: req.params.boardId });
+            const userIds = currentBoard.user_ids.map((userId) => userId.toString());
+
+            const userDictionary = {};
+            const userData = await UserModel.find(
+                { _id: { $in: userIds } },
+                '_id email firstName secondName avatar'
+            );
+            userData.forEach((user) => {
+                userDictionary[user._id.toString()] = {
+                    _id: user._id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    secondName: user.secondName,
+                    avatar: user.avatar,
+                };
+            });
+
+            const searchQuery = req.body.search.toLowerCase();
+
+            const newUsers = userIds
+                .map((userId) => userDictionary[userId])
+                .filter((user) => user.email && user.email.toLowerCase().includes(searchQuery));
+
+            return res.json(newUsers)
+
         } catch (e) {
             next(e)
         }

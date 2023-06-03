@@ -24,7 +24,6 @@ class CardService {
             cardNew
         }
         await column.save()
-        console.log('карта добавлена')
         return (dataCard)
     }
 
@@ -49,7 +48,6 @@ class CardService {
             const currentColumn = await columnsModel.findOne({_id: currentColumnId})
             const currentBoardId = currentColumn.boardId.toString()
             await changedCard.save()
-            console.log('карточка обновлена')
 
             const card = {
                 changedCard,

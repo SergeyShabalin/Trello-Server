@@ -1,7 +1,6 @@
 const checklistModel = require('../models/checklist-model')
 const cardsModel = require("../models/cards-model");
 const columnsModel = require("../models/columns-model");
-const CardService = require("../services/Card-service");
 const ChecklistService = require("../services/Checklist-service")
 
 class ChecklistController {
