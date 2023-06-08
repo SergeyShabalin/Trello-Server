@@ -20,6 +20,7 @@ const UserController = require('../src/controllers/UserController');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 
 const storage = multer.diskStorage({
@@ -49,6 +50,7 @@ app.use('/boards', BoardRouter);
 app.use('/checklist', ChecklistRouter);
 app.use('/user', UserRouter);
 
+
 app.post('/user/sendIMG', (req, res) => {
     const file = req.file;
 
@@ -60,18 +62,25 @@ app.post('/user/sendIMG', (req, res) => {
         const payload = {
             userId: file.originalname,
             background: imageUrl
-        }
+        };
         if (imageUrl) {
-            UserController.downloadBackground(payload)
+            UserController.downloadBackground(payload);
         }
-        return res.json({background: imageUrl, _id: file.originalname})
-    })
 
-//TODO чистить папку images
-})
+        // Удаление файла после загрузки
+        fs.unlink(file.path, (error) => {
+            if (error) {
+                console.log('Ошибка удаления файла:', error);
+            }
+        });
+
+        return res.json({background: imageUrl, _id: file.originalname});
+    });
+});
+
 app.post('/user/sendAvatar', (req, res) => {
     const file = req.file;
-    console.log(file)
+    console.log(file);
 
     cloudinary.uploader.upload(file.path, {public_id: file.originalname+'avatar'}, (error, result) => {
         if (error) {
@@ -81,14 +90,21 @@ app.post('/user/sendAvatar', (req, res) => {
         const payload = {
             userId: file.originalname,
             avatar: imageUrl
-        }
+        };
         if (imageUrl) {
-            UserController.downloadAvatar(payload)
+            UserController.downloadAvatar(payload);
         }
-        return res.json({avatar: imageUrl, _id: file.originalname})
-    })
 
-})
+        // Удаление файла после загрузки
+        fs.unlink(file.path, (error) => {
+            if (error) {
+                console.log('Ошибка удаления файла:', error);
+            }
+        });
+
+        return res.json({avatar: imageUrl, _id: file.originalname});
+    });
+});
 
 
 const io = new Server(server, {

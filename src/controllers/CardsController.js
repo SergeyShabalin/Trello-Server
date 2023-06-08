@@ -114,13 +114,13 @@ class CardsController {
                 currentCard.memberIds.push(data.userId)
                 currentCard.save()
                 const members = updateUserList()
-                return ({users: members, boardId: currentColumn.boardId})
+                return ({users: members, boardId: currentColumn.boardId, memberIds: currentCard.memberIds})
             } else {
                 const changedArray = currentCard.memberIds.filter((id) => id.toString() !== data.userId.toString())
                 currentCard.memberIds = changedArray
                 currentCard.save()
                 const members = updateUserList()
-                return ({users: members, boardId: currentColumn.boardId})
+                return ({users: members, boardId: currentColumn.boardId, memberIds: currentCard.memberIds })
             }
 
         } catch (e) {
