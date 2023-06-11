@@ -21,6 +21,7 @@ const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const CardModel = require("./models/cards-model");
 
 
 const storage = multer.diskStorage({
@@ -227,6 +228,19 @@ const start = async (eventName, listener) => {
             socket.on('ADD_MEMBER_ONE_CARD', async (data) => {
                  const members = await CardsController.addMembersOneCard(data)
                  io.in(members.boardId.toString()).emit('CHANGE_COUNT_MEMBERS', members.users)
+            })
+
+            socket.on('CONVERT_TASK_TO_CARD', async (data) => {
+                console.log(data)
+                const currentCard =   await CardModel.findOne({_id: data.cardId})
+                const currentColumnId = currentCard.column_id
+                const payload = {
+                 title: data.title,
+                    column_id: currentColumnId
+                }
+                const cardData = await CardsController.newCard(payload)
+                const boardId = cardData.boardId.toString()
+                 io.in(boardId).emit('CARD_ADDED', cardData.cardNew)
             })
 
             console.log('A user connected', socket.id);
