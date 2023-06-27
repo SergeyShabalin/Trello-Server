@@ -19,40 +19,42 @@ class ColumnsController {
 
     async newColumn(req, res) {
         const body = {
-            title: req.title,
+            title: req.body.title,
             sortArr: [],
-            boardId: req.boardId
+            boardId: req.body.boardId
         }
-        if (req.title === '') {
+        if (req.body.title === '') {
             body.title = 'Новая колонка'
         }
         try {
             const columnNew = new columnsModel(body)
             await columnNew.save()
-            const currentBoard = await boardsModel.findOne({_id: req.boardId})
+            const currentBoard = await boardsModel.findOne({_id: req.body.boardId})
             currentBoard.columns.push(columnNew._id)
             await currentBoard.save()
-            return columnNew
+            return res.json(columnNew)
         } catch (e) {
             console.log(e)
         }
     }
 
-    async deleteColumn(columnId, res) {
+    async deleteColumn(req, res) {
+
+        const columnId = req.params.id.toString()
         try {
             const cardsInColumn = await cardsModel.find({column_id: columnId})
             const cardsId = cardsInColumn.map(i => i._id)
-            await checkListModel.remove({cardId: cardsId})
-            const isDeleteCardsInColumn = await cardsModel.remove({column_id: columnId})
+            await checkListModel.deleteMany({cardId: cardsId})
+            const isDeleteCardsInColumn = await cardsModel.deleteMany({column_id: columnId})
 
             const currentColumn = await columnsModel.findOne({_id: columnId})
             const currentBoard = await boardsModel.findOne({_id: currentColumn.boardId})
             currentBoard.columns = currentBoard.columns.filter(item => item.toString() !== currentColumn._id.toString())
 
-            const isDelete = await columnsModel.remove({_id: columnId})
+            const isDelete = await columnsModel.deleteOne({_id: columnId})
             await currentBoard.save()
 
-            if (isDelete && isDeleteCardsInColumn) return (currentBoard)
+            if (isDelete && isDeleteCardsInColumn) return res.json(columnId)
             else console.log('the error deleted')
         } catch (e) {
             console.log(e)

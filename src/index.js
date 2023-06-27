@@ -160,17 +160,17 @@ const start = async (eventName, listener) => {
             })
 
             socket.on('BOARD_CHANGE', async (data) => {
-                const newBoard = await BoardsController.updateBoard(data)
-                console.log({newBoard})
-                const boardId = data._id
-                io.in(boardId).emit('BOARD_CHANGED', newBoard)
+                // const newBoard = await BoardsController.updateBoard(data)
+                // console.log({newBoard})
+                // const boardId = data._id
+                // io.in(boardId).emit('BOARD_CHANGED', newBoard)
             })
 
             socket.on('COLUMN_ADD', async (column) => {
-                const clients = socket.adapter.rooms.get(column.boardId);
-                console.log(column, socket.id, 'clients:', clients)
-                const newColumn = await ColumnsController.newColumn(column)
-                io.in(column.boardId).emit('COLUMN_ADDED', newColumn)
+                // const clients = socket.adapter.rooms.get(column.boardId);
+                // console.log(column, socket.id, 'clients:', clients)
+                // const newColumn = await ColumnsController.newColumn(column)
+                // io.in(column.boardId).emit('COLUMN_ADDED', newColumn)
             })
 
             socket.on('COLUMN_DELETE', async (columnId) => {
