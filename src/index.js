@@ -159,39 +159,6 @@ const start = async (eventName, listener) => {
                 socket.disconnect()
             })
 
-            socket.on('BOARD_CHANGE', async (data) => {
-                // const newBoard = await BoardsController.updateBoard(data)
-                // console.log({newBoard})
-                // const boardId = data._id
-                // io.in(boardId).emit('BOARD_CHANGED', newBoard)
-            })
-
-            socket.on('COLUMN_ADD', async (column) => {
-                // const clients = socket.adapter.rooms.get(column.boardId);
-                // console.log(column, socket.id, 'clients:', clients)
-                // const newColumn = await ColumnsController.newColumn(column)
-                // io.in(column.boardId).emit('COLUMN_ADDED', newColumn)
-            })
-
-            socket.on('COLUMN_DELETE', async (columnId) => {
-                const currentBoard = await ColumnsController.deleteColumn(columnId)
-                const boardId = currentBoard._id.toString()
-                const columnIds = currentBoard.columns
-                const data = {columnId, columnIds}
-                io.in(boardId).emit('COLUMN_DELETED', data)
-            })
-
-            socket.on('COLUMN_CHANGE', async (data) => {
-                const currentColumn = await ColumnsController.updateColumn(data)
-                const boardId = currentColumn.boardId.toString()
-                io.in(boardId).emit('COLUMN_CHANGED', currentColumn)
-            })
-
-            socket.on('CARD_ADD', async (data) => {
-                const cardData = await CardsController.newCard(data)
-                const boardId = cardData.boardId.toString()
-                io.in(boardId).emit('CARD_ADDED', cardData.cardNew)
-            })
             socket.on('CARD_DELETE', async (cardId) => {
                 const cardData = await CardsController.deleteCard(cardId)
                 const boardId = cardData.toString()

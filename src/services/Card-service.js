@@ -8,9 +8,7 @@ class CardService {
 
     async addNew(data) {
         const cards = await cardsModel.find({})
-        const order = cards.map(item => item.order)
-        const maxOrder = (order.length < 1 ? 1 : order.reduce((a, b) => a > b ? a : b) + 1);
-        const body = {...data, title: data.title, order: maxOrder, doneTask: 0, countTask: 0, decisionDate: null, memberIds: []}
+        const body = {...data, title: data.title, doneTask: 0, countTask: 0, decisionDate: null, memberIds: []}
         if (data.title === '') {
             body.title = 'Новая карточка'
         }
@@ -18,13 +16,8 @@ class CardService {
         await cardNew.save()
         const column = await columnsModel.findOne({_id: data.column_id})
         column.cards.push(cardNew._id)
-        column.sortArr.push(maxOrder)
-        const dataCard = {
-            boardId: column.boardId,
-            cardNew
-        }
         await column.save()
-        return (dataCard)
+        return (cardNew)
     }
 
     async delete(id) {

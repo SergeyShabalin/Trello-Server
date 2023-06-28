@@ -20,7 +20,6 @@ class ColumnsController {
     async newColumn(req, res) {
         const body = {
             title: req.body.title,
-            sortArr: [],
             boardId: req.body.boardId
         }
         if (req.body.title === '') {
@@ -39,7 +38,6 @@ class ColumnsController {
     }
 
     async deleteColumn(req, res) {
-
         const columnId = req.params.id.toString()
         try {
             const cardsInColumn = await cardsModel.find({column_id: columnId})
@@ -63,9 +61,9 @@ class ColumnsController {
 
     async updateColumn(req, res) {
         try {
-            if (req.title === '') req.title = 'Новая колонка'
-            const refreshColumn = await columnService.update(req)
-            return refreshColumn
+            if (req.body.title === '') req.body.title = 'Новая колонка'
+            const refreshColumn = await columnService.update(req.body)
+            return res.json(refreshColumn)
         } catch (e) {
             console.log(e);
         }
